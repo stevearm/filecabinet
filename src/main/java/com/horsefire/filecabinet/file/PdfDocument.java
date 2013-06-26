@@ -16,8 +16,8 @@ import com.sun.pdfview.PDFPage;
 
 public class PdfDocument extends Document {
 
-	public PdfDocument(File rawFile) throws IOException {
-		super(rawFile);
+	public PdfDocument(File dir, String id) throws IOException {
+		super(dir, id);
 	}
 
 	@Override

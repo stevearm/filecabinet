@@ -15,6 +15,7 @@
 
 	<properties>
 		<util.version>1.2</util.version>
+		<jetty.version>9.0.3.v20130506</jetty.version>
 		<guice.version>3.0</guice.version>
 	</properties>
 
@@ -24,6 +25,16 @@
 			<groupId>com.horsefire</groupId>
 			<artifactId>util</artifactId>
 			<version>${util.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>${jetty.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -50,7 +61,7 @@
 			<artifactId>guava</artifactId>
 			<version>14.0.1</version>
 		</dependency>
-		
+
 		<!-- Guice -->
 		<dependency>
 			<groupId>com.google.inject</groupId>
@@ -105,7 +116,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>com.horsefire.movieminder.MovieMinder</mainClass>
+							<mainClass>com.horsefire.filecabinet.FileCabinet</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

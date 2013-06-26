@@ -17,23 +17,21 @@ public abstract class Document {
 	public static final String EXT_RAW = "raw";
 	public static final String EXT_THUMBNAIL = "png";
 
+	private final String m_id;
 	private final File m_rawFile;
 	private final File m_metaFile;
 	private final File m_thumbnailFile;
 	private final DocumentProperties m_props;
 
-	public Document(File rawFile) throws IOException {
-		m_rawFile = rawFile;
+	public Document(File dir, String id) throws IOException {
+		m_id = id;
 
-		if (m_rawFile.getName().length() != 44
-				|| !m_rawFile.getName().substring(40).equals("." + EXT_RAW)) {
-			throw new FileNotFoundException(
-					"Expected raw file to be named [sha1].raw: "
-							+ m_rawFile.getName());
+		m_rawFile = new File(dir, id + "." + EXT_RAW);
+		if (!m_rawFile.isFile()) {
+			throw new FileNotFoundException("Raw file must exist: " + m_rawFile);
 		}
 
-		String sha1 = m_rawFile.getName().substring(0, 40);
-		m_metaFile = new File(m_rawFile.getParentFile(), sha1 + ".json");
+		m_metaFile = new File(dir, m_id + ".json");
 		if (m_metaFile.isFile()) {
 			Reader r = new FileReader(m_metaFile);
 			try {
@@ -45,8 +43,11 @@ public abstract class Document {
 			m_props = new DocumentProperties();
 		}
 
-		m_thumbnailFile = new File(m_rawFile.getParentFile(), sha1 + "."
-				+ EXT_THUMBNAIL);
+		m_thumbnailFile = new File(dir, m_id + "." + EXT_THUMBNAIL);
+	}
+
+	public String getId() {
+		return m_id;
 	}
 
 	private void saveProps() throws IOException {
@@ -68,6 +69,10 @@ public abstract class Document {
 
 	public File getThumbnailFile() {
 		return m_thumbnailFile;
+	}
+
+	public boolean hasThumbnail() {
+		return getThumbnailFile().isFile();
 	}
 
 	public abstract void createThumbnail() throws IOException;
