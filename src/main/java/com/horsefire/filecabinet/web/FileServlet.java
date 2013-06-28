@@ -1,5 +1,7 @@
 package com.horsefire.filecabinet.web;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.io.ByteStreams;
+import com.google.inject.Injector;
+import com.horsefire.filecabinet.FileCabinet;
+import com.horsefire.filecabinet.Options;
 
 @SuppressWarnings("serial")
 public abstract class FileServlet extends HttpServlet {
@@ -23,10 +28,14 @@ public abstract class FileServlet extends HttpServlet {
 
 	private final String m_resource;
 	private final String m_contentType;
+	private final boolean m_debug;
 
 	public FileServlet(String resource, String contentType) {
 		m_resource = resource;
 		m_contentType = contentType;
+
+		Injector i = FileCabinet.INJECTOR.get();
+		m_debug = i.getInstance(Options.class).debug;
 	}
 
 	@Override
@@ -35,18 +44,29 @@ public abstract class FileServlet extends HttpServlet {
 		LOG.debug("Reading {}", m_resource);
 		resp.setContentType(m_contentType);
 
-		InputStream in = getClass().getClassLoader().getResourceAsStream(
-				"web/" + m_resource);
-		if (in == null) {
-			throw new FileNotFoundException("Could not load resource: "
-					+ m_resource);
-		}
-		OutputStream out = resp.getOutputStream();
+		InputStream in = null;
+		OutputStream out = null;
 		try {
+			if (m_debug) {
+				in = new FileInputStream(new File("src/main/resources/web/"
+						+ m_resource));
+			} else {
+				in = getClass().getClassLoader().getResourceAsStream(
+						"web/" + m_resource);
+			}
+			if (in == null) {
+				throw new FileNotFoundException("Could not load resource: "
+						+ m_resource);
+			}
+			out = resp.getOutputStream();
 			ByteStreams.copy(in, out);
 		} finally {
-			in.close();
-			out.close();
+			if (in != null) {
+				in.close();
+			}
+			if (out != null) {
+				out.close();
+			}
 		}
 	}
 }

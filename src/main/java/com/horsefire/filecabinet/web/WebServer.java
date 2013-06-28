@@ -23,6 +23,7 @@ public class WebServer {
 				ShutdownServlet.PATH);
 		handler.addServletWithMapping(IndexHtmlServlet.class,
 				IndexHtmlServlet.PATH);
+		handler.addServletWithMapping(IndexHtmlServlet.class, "/");
 		handler.addServletWithMapping(JqueryServlet.class, JqueryServlet.PATH);
 		handler.addServletWithMapping(CabinetServlet.class, CabinetServlet.PATH);
 		handler.addServletWithMapping(FetchServlet.class, FetchServlet.PATH);

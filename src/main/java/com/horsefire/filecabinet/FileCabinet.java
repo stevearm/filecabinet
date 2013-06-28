@@ -1,24 +1,9 @@
 package com.horsefire.filecabinet;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -46,33 +31,6 @@ public class FileCabinet {
 		m_server.shutdown();
 	}
 
-	private static void startDebug() {
-		final Logger debugLogger = LoggerFactory
-				.getLogger("com.horsefire.filecabinet.DebugTask");
-		final Map<File, File> files = new HashMap<File, File>();
-		files.put(new File("src/main/resources/web/index.html"), new File(
-				"target/classes/web/index.html"));
-		Timer timer = new Timer(true);
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				InputStream in;
-				OutputStream out;
-				try {
-					for (Entry<File, File> entry : files.entrySet()) {
-						in = new FileInputStream(entry.getKey());
-						out = new FileOutputStream(entry.getValue());
-						ByteStreams.copy(in, out);
-						in.close();
-						out.close();
-					}
-				} catch (IOException e) {
-					debugLogger.error("Error copying file", e);
-				}
-			}
-		}, 5, 1000);
-	}
-
 	public static void main(String[] args) throws Exception {
 		Options options = new Options();
 		try {
@@ -80,10 +38,6 @@ public class FileCabinet {
 		} catch (ParameterException e) {
 			System.err.println(e.getMessage());
 			return;
-		}
-
-		if (options.debug) {
-			startDebug();
 		}
 
 		Injector injector = Guice.createInjector(new FcModule(options));

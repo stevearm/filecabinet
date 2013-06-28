@@ -15,6 +15,7 @@ public class FcModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
+		bind(Options.class).toInstance(m_options);
 		bind(File.class).annotatedWith(Names.named("cabinet")).toInstance(
 				new File("cabinet"));
 		bind(File.class).annotatedWith(Names.named("desk")).toInstance(

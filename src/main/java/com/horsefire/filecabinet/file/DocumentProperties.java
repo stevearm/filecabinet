@@ -8,8 +8,8 @@ import org.joda.time.DateTime;
 class DocumentProperties {
 
 	String filename;
-	DateTime uploaded;
-	DateTime effective;
+	String uploaded = new DateTime().toString();
+	String effective = new DateTime().toString();
 	boolean unseen = true;
 	Set<String> tags = new HashSet<String>();
 }

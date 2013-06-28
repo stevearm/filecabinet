@@ -10,9 +10,15 @@ import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 
 public abstract class Document {
+
+	private static final Logger LOG = LoggerFactory.getLogger(Document.class);
 
 	public static final String EXT_RAW = "raw";
 	public static final String EXT_THUMBNAIL = "png";
@@ -36,6 +42,9 @@ public abstract class Document {
 			Reader r = new FileReader(m_metaFile);
 			try {
 				m_props = new Gson().fromJson(r, DocumentProperties.class);
+			} catch (RuntimeException e) {
+				LOG.error("Could not deserialize {}", m_metaFile, e);
+				throw e;
 			} finally {
 				r.close();
 			}
@@ -101,6 +110,19 @@ public abstract class Document {
 
 	public void setTags(Set<String> tags) throws IOException {
 		m_props.tags = tags;
+		saveProps();
+	}
+
+	public DateTime getUploaded() {
+		return new DateTime(m_props.uploaded);
+	}
+
+	public DateTime getEffective() {
+		return new DateTime(m_props.effective);
+	}
+
+	public void setEffective(DateTime effective) throws IOException {
+		m_props.effective = effective.toString();
 		saveProps();
 	}
 }
