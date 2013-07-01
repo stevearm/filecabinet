@@ -21,10 +21,7 @@ public class WebServer {
 		ServletHandler handler = new ServletHandler();
 		handler.addServletWithMapping(ShutdownServlet.class,
 				ShutdownServlet.PATH);
-		handler.addServletWithMapping(IndexHtmlServlet.class,
-				IndexHtmlServlet.PATH);
-		handler.addServletWithMapping(IndexHtmlServlet.class, "/");
-		handler.addServletWithMapping(JqueryServlet.class, JqueryServlet.PATH);
+		handler.addServletWithMapping(EmbeddedFileServlet.class, "/");
 		handler.addServletWithMapping(CabinetServlet.class, CabinetServlet.PATH);
 		handler.addServletWithMapping(FetchServlet.class, FetchServlet.PATH);
 		return handler;

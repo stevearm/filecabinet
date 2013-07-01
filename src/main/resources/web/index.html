@@ -1,77 +1,9 @@
 <html>
 	<head>
 		<title>File Cabinet</title>
-		<link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
-		<link rel="stylesheet" type="text/css" href="//aehlke.github.io/tag-it/css/jquery.tagit.css">
-		<style type="text/css">
-#fade {
-	display: none;
-	position: absolute;
-	top: 0%;
-	left: 0%;
-	width: 100%;
-	height: 100%;
-	background-color: black;
-	z-index:1001;
-	-moz-opacity: 0.8;
-	opacity:.80;
-	filter: alpha(opacity=80);
-}
- 
-#light {
-	display: none;
-	position: absolute;
-	top: 100px;
-	left: 100px;
-	width: 1000px;
-	height: 400px;
-	padding: 16px 16px 16px 500px;
-	border: 16px solid blue;
-	background-color: white;
-	z-index:1002;
-	overflow: auto;
-}
-
-.doc {
-	/* Background gradient from http://ie.microsoft.com/testdrive/graphics/cssgradientbackgroundmaker/default.html */ 
-	background-image: -ms-linear-gradient(left, #ECECEC 0%, #E2E2E2 100%);
-	background-image: -moz-linear-gradient(left, #ECECEC 0%, #E2E2E2 100%);
-	background-image: -o-linear-gradient(left, #ECECEC 0%, #E2E2E2 100%);
-	background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #ECECEC), color-stop(1, #E2E2E2));
-	background-image: -webkit-linear-gradient(left, #ECECEC 0%, #E2E2E2 100%);
-	background-image: linear-gradient(to right, #ECECEC 0%, #E2E2E2 100%);
-
-	padding: 10px 20px;
-	border: 2px #fff solid;
-	border-radius: 20px;
-	margin: 10px;
-	display: inline-block;
-	width: 450px;
-	height: 140px;
-	cursor: pointer;
-}
-
-.thumb {
-	display: inline-block;
-	height: 135px;
-	float: left;
-	margin: 5px;
-}
-
-#full-image-viewport {
-	position: absolute;
-	top: 30px;
-	left: 30px;
-	height: 400px;
-	width: 400px;
-	overflow: hidden;
-	border: solid thin black;
-}
-#full-image {
-	position: relative;
-	cursor: move;
-}
-		</style>
+		<link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css"/>
+		<link rel="stylesheet" type="text/css" href="//aehlke.github.io/tag-it/css/jquery.tagit.css"/>
+		<link rel="stylesheet" type="text/css" href="/?file=main.css"/>
 	</head>
 	<body>
 		<div id="new">
@@ -86,110 +18,9 @@
 		<div id="light"></div>
 		<div id="fade"></div>
 
-		<!--<script type="text/javascript" src="jquery.js"></script>-->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 		<script src="//aehlke.github.io/tag-it/js/tag-it.js"></script>
-		<script type="text/javascript">
-var docs = null;
-var tags = null;
-
-var refresh = function() {
-	var files = $('#files');
-	var newFiles = $('#new > div');
-	for (var id in docs) {
-		var doc = docs[id];
-		var html = '<div class="doc" onclick="openDoc(\''+id+'\')">';
-		if (doc.thumb) {
-			html += '<img class="thumb" src="/fetch?id='+id+'&type=thumb"/>';
-		} else {
-			html += 'No thumb';
-		}
-		html += '<span>Filename: '+doc.filename+'</span>';
-		html += '<span>Uploaded: '+doc.uploaded+'</span>';
-		html += '<span>Effective: '+doc.effective+'</span>';
-		html += '<span>Tags:</span><ul>';
-		for (var i = 0; i < doc.tags.length; i++) {
-			html += '<li>'+doc.tags[i]+'</li>';
-		}
-		html += '</ul>';
-		html += '</div>';
-		if (doc.unseen) {
-			newFiles.append(html);
-		}
-		files.append(html);
-	}
-	
-	//openDoc('b987b2cb274a381637139acbd87fff0c6cf33853');
-};
-
-var openDoc = function(id) {
-	var doc = docs[id];
-	var lightNode = $('#light');
-	lightNode.empty();
-	lightNode.append('<div id="full-image-viewport">'
-		+'<img id="full-image" src="/fetch?id='+id+'&type=thumb"/>'
-		+'</div>'
-		+'<span id="filename">'+doc.filename+'</span>'
-		+'<span id="uploaded">'+doc.uploaded+'</span>'
-		+'<span id="effective">'+doc.effective+'</span>');
-	var tagsInput = $('<input name="tags" id="tags" style="position:relative" value="'+doc.tags.join(',')+'"/>');
-	lightNode.append(tagsInput);
-	tagsInput.tagit();
-	tagsInput.change(function(){
-		doc.tags = tagsInput.val().split(',');
-		saveDoc(doc);
-	});
-	
-	lightNode.show();
-	$('#fade').show();
-};
-
-var closeDoc = function() {
-	$('#light').hide();
-	$('#fade').hide();
-};
-
-var saveDoc = function(doc) {
-	$.ajax({
-		type:"POST",
-		traditional:true,
-		url:"/cabinet",
-		data:{
-			id:doc.id,
-			action:"saveDoc",
-			unseed:doc.unseen,
-			tags:doc.tags
-		},
-		success:function(){},
-		error : genericAjaxError,
-		dataType:"json"
-	});
-};
-
-var genericAjaxError = function(req, response) {
-	alert("Error contacting server");
-	console.log("Failed request " + response, req);
-};
-
-$(document).ready(function() {
-	$.ajax({
-		url : "/cabinet",
-		dataType : "json",
-		success : function(json) {
-			docs = json.docs;
-			tags = json.tags;
-			refresh();
-		},
-		error : genericAjaxError
-	});
-	
-	$(document).keydown(function(e){
-		if(e.keyCode == 27){
-			closeDoc();
-		}
-	});
-});
-		</script>
+		<script src="/?file=main.js"></script>
 	</body>
 </html>

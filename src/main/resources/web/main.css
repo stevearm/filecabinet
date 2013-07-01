@@ -1,0 +1,67 @@
+#fade {
+	display: none;
+	position: absolute;
+	top: 0%;
+	left: 0%;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	z-index:1001;
+	-moz-opacity: 0.8;
+	opacity:.80;
+	filter: alpha(opacity=80);
+}
+ 
+#light {
+	display: none;
+	position: absolute;
+	top: 100px;
+	left: 100px;
+	width: 1000px;
+	height: 400px;
+	padding: 16px 16px 16px 500px;
+	border: 16px solid blue;
+	background-color: white;
+	z-index:1002;
+	overflow: auto;
+}
+
+.doc {
+	/* Background gradient from http://ie.microsoft.com/testdrive/graphics/cssgradientbackgroundmaker/default.html */ 
+	background-image: -ms-linear-gradient(left, #ECECEC 0%, #E2E2E2 100%);
+	background-image: -moz-linear-gradient(left, #ECECEC 0%, #E2E2E2 100%);
+	background-image: -o-linear-gradient(left, #ECECEC 0%, #E2E2E2 100%);
+	background-image: -webkit-gradient(linear, left top, right top, color-stop(0, #ECECEC), color-stop(1, #E2E2E2));
+	background-image: -webkit-linear-gradient(left, #ECECEC 0%, #E2E2E2 100%);
+	background-image: linear-gradient(to right, #ECECEC 0%, #E2E2E2 100%);
+
+	padding: 10px 20px;
+	border: 2px #fff solid;
+	border-radius: 20px;
+	margin: 10px;
+	display: inline-block;
+	width: 450px;
+	height: 140px;
+	cursor: pointer;
+}
+
+.thumb {
+	display: inline-block;
+	height: 135px;
+	float: left;
+	margin: 5px;
+}
+
+#full-image-viewport {
+	position: absolute;
+	top: 30px;
+	left: 30px;
+	height: 400px;
+	width: 400px;
+	overflow: hidden;
+	border: solid thin black;
+}
+#full-image {
+	position: relative;
+	cursor: move;
+}
