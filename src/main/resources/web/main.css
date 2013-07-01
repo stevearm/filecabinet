@@ -20,7 +20,7 @@
 	width: 1000px;
 	height: 400px;
 	padding: 16px 16px 16px 500px;
-	border: 16px solid blue;
+	border: 8px solid blue;
 	background-color: white;
 	z-index:1002;
 	overflow: auto;
@@ -41,16 +41,39 @@
 	margin: 10px;
 	display: inline-block;
 	width: 450px;
-	height: 140px;
 	cursor: pointer;
 }
 
 .thumb {
 	display: inline-block;
 	height: 135px;
-	float: left;
-	margin: 5px;
+	float: right;
 }
+
+.doc .key {
+	display: inline-block;
+	width: 70px;
+}
+
+.doc .value {
+	font-weight: bold;
+}
+
+.doc ul {
+	padding: 0px;
+	margin: 3px;
+}
+
+.doc li {
+	display: inline-block;
+	color: #fff;
+	background-color: #707070;
+	margin: 2px;
+	padding: 5px;
+	border-radius: 5px;
+}
+
+/********************** Full image **************************/
 
 #full-image-viewport {
 	position: absolute;

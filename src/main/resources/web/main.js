@@ -12,10 +12,10 @@ var refresh = function() {
 		} else {
 			html += 'No thumb';
 		}
-		html += '<span>Filename: '+doc.filename+'</span>';
-		html += '<span>Uploaded: '+doc.uploaded+'</span>';
-		html += '<span>Effective: '+doc.effective+'</span>';
-		html += '<span>Tags:</span><ul>';
+		html += '<div><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
+		html += '<div><span class="key">Uploaded</span><span class="value">'+doc.uploaded+'</span></div>';
+		html += '<div><span class="key">Effective</span><span class="value">'+doc.effective+'</span></div>';
+		html += '<ul>';
 		for (var i = 0; i < doc.tags.length; i++) {
 			html += '<li>'+doc.tags[i]+'</li>';
 		}

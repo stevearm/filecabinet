@@ -46,8 +46,8 @@ public class CabinetServlet extends HttpServlet {
 			docInfo.put("thumb", doc.hasThumbnail());
 			docInfo.put("filename", doc.getFilename());
 			docInfo.put("tags", doc.getTags());
-			docInfo.put("uploaded", doc.getUploaded().toString());
-			docInfo.put("effective", doc.getEffective().toString());
+			docInfo.put("uploaded", doc.getUploaded().toString("yyyy-MM-dd"));
+			docInfo.put("effective", doc.getEffective().toString("yyyy-MM-dd"));
 
 			docs.put(doc.getId(), docInfo);
 		}
