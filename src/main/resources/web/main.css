@@ -26,6 +26,19 @@
 	overflow: auto;
 }
 
+/************************** Common **********************/
+
+.key {
+	display: inline-block;
+	width: 70px;
+}
+
+.value {
+	font-weight: bold;
+}
+
+/**************** Thumbs *******************/
+
 .doc {
 	/* Background gradient from http://ie.microsoft.com/testdrive/graphics/cssgradientbackgroundmaker/default.html */ 
 	background-image: -ms-linear-gradient(left, #ECECEC 0%, #E2E2E2 100%);
@@ -48,15 +61,6 @@
 	display: inline-block;
 	height: 135px;
 	float: right;
-}
-
-.doc .key {
-	display: inline-block;
-	width: 70px;
-}
-
-.doc .value {
-	font-weight: bold;
 }
 
 .doc ul {
