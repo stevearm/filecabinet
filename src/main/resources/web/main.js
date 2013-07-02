@@ -1,9 +1,11 @@
 var docs = null;
 var tags = null;
 
-var refresh = function() {
+var redraw = function() {
 	var files = $('#files');
+	files.empty();
 	var newFiles = $('#new > div');
+	newFiles.empty();
 	for (var id in docs) {
 		var doc = docs[id];
 		var html = '<div class="doc" onclick="openDoc(\''+id+'\')">';
@@ -26,8 +28,11 @@ var refresh = function() {
 		}
 		files.append(html);
 	}
-	
-	openDoc('b987b2cb274a381637139acbd87fff0c6cf33853');
+	if (newFiles.children().size() == 0) {
+		$('#new').hide();
+	} else {
+		$('#new').show();
+	}
 };
 
 var openDoc = function(id) {
@@ -36,26 +41,50 @@ var openDoc = function(id) {
 	lightNode.empty();
 	
 	var html = '<div id="full-image-viewport">';
-	html += '<img id="full-image" src="/fetch?id='+id+'&type=thumb"/>';
+	if (doc.thumb) {
+		html += '<img id="full-image" src="/fetch?id='+id+'&type=thumb"/>';
+	} else {
+		html += '<button onclick="generateThumb(\''+id+'\');">Generate</button>'
+	}
 	html += '</div>';
 	html += '<div><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
 	html += '<div><span class="key">Uploaded</span><span class="value">'+doc.uploaded+'</span></div>';
-	html += '<div><span class="key">Effective</span><span class="value">'+doc.effective+'</span></div>';
+	html += '<div><span class="key">Effective</span><span class="value"><input type="text" id="effective-date" size="20" value="'+doc.effective+'"/></span></div>';
+	if (doc.unseen) {
+		html += '<div id="unseen"><span class="key">Unseen</span><span class="value"><button>Mark as seen</button></span></div>';
+	}
+	html += '<input name="tags" id="tags" style="position:relative" value="'+doc.tags.join(',')+'"/>';
 	lightNode.append(html);
 	
-	$('#full-image').draggable({
-		drag: function(event, ui) {
-			if(ui.position.top>0) { ui.position.top = 0; }
-			var maxtop = ui.helper.parent().height()-ui.helper.height();
-			if(ui.position.top<maxtop) { ui.position.top = maxtop; }
-			if(ui.position.left>0) { ui.position.left = 0; }
-			var maxleft = ui.helper.parent().width()-ui.helper.width();
-			if(ui.position.left<maxleft) { ui.position.left = maxleft; }
-		}
+	if (doc.thumb) {
+		$('#full-image').draggable({
+			drag: function(event, ui) {
+				if(ui.position.top>0) { ui.position.top = 0; }
+				var maxtop = ui.helper.parent().height()-ui.helper.height();
+				if(ui.position.top<maxtop) { ui.position.top = maxtop; }
+				if(ui.position.left>0) { ui.position.left = 0; }
+				var maxleft = ui.helper.parent().width()-ui.helper.width();
+				if(ui.position.left<maxleft) { ui.position.left = maxleft; }
+			}
+		});
+	}
+	
+	var effectiveDate = $('#effective-date');
+	effectiveDate.datepicker({
+		dateFormat: "yy-mm-dd"
+	});
+	effectiveDate.change(function(){
+		doc.effective = effectiveDate.val();
+		saveDoc(doc);
 	});
 	
-	var tagsInput = $('<input name="tags" id="tags" style="position:relative" value="'+doc.tags.join(',')+'"/>');
-	lightNode.append(tagsInput);
+	$('#unseen > span.value > button').click(function(){
+		doc.unseen = false;
+		saveDoc(doc);
+		$('#unseen').remove();
+	});
+	
+	var tagsInput = $('#tags');
 	tagsInput.tagit();
 	tagsInput.change(function(){
 		doc.tags = tagsInput.val().split(',');
@@ -80,13 +109,35 @@ var saveDoc = function(doc) {
 			id:doc.id,
 			action:"saveDoc",
 			unseed:doc.unseen,
-			tags:doc.tags
+			tags:doc.tags,
+			effective:doc.effective
 		},
-		success:function(){},
+		success:function(){
+			redraw();
+		},
 		error : genericAjaxError,
 		dataType:"json"
 	});
 };
+
+var generateThumb = function(id) {
+	$.ajax({
+		type:"POST",
+		traditional:true,
+		url:"/cabinet",
+		data:{
+			id:id,
+			action:"createThumbnail"
+		},
+		success:function(){
+			docs[id].thumb = true;
+			redraw();
+			openDoc(id);
+		},
+		error : genericAjaxError,
+		dataType:"json"
+	});
+}
 
 var genericAjaxError = function(req, response) {
 	alert("Error contacting server");
@@ -100,7 +151,7 @@ $(document).ready(function() {
 		success : function(json) {
 			docs = json.docs;
 			tags = json.tags;
-			refresh();
+			redraw();
 		},
 		error : genericAjaxError
 	});

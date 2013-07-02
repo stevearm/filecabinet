@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,10 +91,15 @@ public class CabinetServlet extends HttpServlet {
 		if ("createThumbnail".equals(action)) {
 			LOG.debug("Generating thumbnail for {}", doc.getId());
 			doc.createThumbnail();
+			resp.setContentType("text/javascript");
+			resp.getWriter().print("{}");
 		} else if ("saveDoc".equals(action)) {
 			Set<String> tagSet = new HashSet<String>();
-			for (String tag : req.getParameterValues("tags")) {
-				tagSet.add(tag.toLowerCase().trim());
+			String[] parameterValues = req.getParameterValues("tags");
+			if (parameterValues != null) {
+				for (String tag : parameterValues) {
+					tagSet.add(tag.toLowerCase().trim());
+				}
 			}
 			if (!doc.getTags().equals(tagSet)) {
 				doc.setTags(tagSet);
@@ -106,6 +112,14 @@ public class CabinetServlet extends HttpServlet {
 					LOG.debug("Setting doc {} as seen", doc.getId());
 				}
 			}
+
+			DateTime effectiveDate = new DateTime(req.getParameter("effective"));
+			if (!doc.getEffective().equals(effectiveDate)) {
+				LOG.debug("Setting {} to effective date {}", doc.getId(),
+						effectiveDate);
+				doc.setEffective(effectiveDate);
+			}
+
 			resp.setContentType("text/javascript");
 			resp.getWriter().print("{}");
 		} else {
