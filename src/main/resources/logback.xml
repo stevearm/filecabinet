@@ -10,7 +10,7 @@
 	</appender>
 
 	<!-- Levels are OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL -->
-	<logger name="org.eclipse.jetty" level="ERROR"/>
+	<logger name="org.eclipse.jetty" level="WARN"/>
 	<root level="DEBUG">
 		<appender-ref ref="CONSOLE" />
 		<!-- <appender-ref ref="FILE" /> -->
