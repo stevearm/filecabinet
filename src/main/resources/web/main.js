@@ -1,22 +1,22 @@
 var docs = null;
-var tags = null;
-var activeTags = {};
+var tags = {};
 
 var redraw = function() {
 	var tagFilter = $('#tag-filter');
 	tagFilter.empty();
-	tags.sort();
-	for (var i = 0; i < tags.length; i++) {
-		var element = $('<span class="tag'+( (activeTags[tags[i]]) ? ' selected' : '' )+'">'+tags[i]+'</span>');
+	var tagNames = Object.keys(tags);
+	tagNames.sort();
+	for (var i = 0; i < tagNames.length; i++) {
+		var tagName = tagNames[i];
+		var element = $('<span class="tag'+( (tags[tagName]) ? ' selected' : '' )+'">'+tagName+'</span>');
 		element.click(function(event) {
 			var tmp = $(this);
-			var tagName = tmp.html();
 			if (tmp.hasClass('selected')) {
 				tmp.removeClass('selected');
-				activeTags[tagName] = false;
+				tags[tagName] = false;
 			} else {
 				tmp.addClass('selected');
-				activeTags[tagName] = true;
+				tags[tagName] = true;
 			}
 			redraw();
 		});
@@ -42,7 +42,7 @@ var redraw = function() {
 		
 		var tagsAreSelected = false;
 		for (var i = 0; i < doc.tags.length; i++) {
-			if (activeTags[doc.tags[i]]) { tagsAreSelected = true; }
+			if (tags[doc.tags[i]]) { tagsAreSelected = true; }
 			html += '<li>'+doc.tags[i]+'</li>';
 		}
 		html += '</ul>';
@@ -112,11 +112,26 @@ var openDoc = function(id) {
 	
 	var tagsInput = $('#tags');
 	tagsInput.tagit({
-		availableTags:tags
+		autocomplete: {
+			source: function(request, callback) {
+				var suggestions = [];
+				for (var tag in tags) {
+					if (tag.indexOf(request.term) != -1) {
+						suggestions.push(tag);
+					}
+				}
+				callback(suggestions);
+			}
+		}
 	});
 	tagsInput.change(function(){
 		doc.tags = tagsInput.val().split(',');
 		saveDoc(doc);
+		for (var i = 0; i < doc.tags.length; i++) {
+			if (!tags.hasOwnProperty(doc.tags[i])) {
+				tags[doc.tags[i]] = false;
+			}
+		}
 	});
 	
 	lightNode.show();
@@ -178,23 +193,26 @@ $(document).ready(function() {
 		dataType : "json",
 		success : function(json) {
 			docs = json.docs;
-			tags = json.tags;
+			for (var i = 0; i < json.tags.length; i++) {
+				if (!tags.hasOwnProperty(json.tags[i])) {
+					tags[json.tags[i]] = false;
+				}
+			}
 			$('#all-files-path').html("All files: "+json.paths.cabinet);
 			$('#new-files-path').html("New files: "+json.paths.desk);
-			var all = function() {
-				for (var i = 0; i < tags.length; i++) {
-					activeTags[tags[i]] = true;
-				}
-				redraw();
-			};
-			$('#tag-filter-all').click(all);
-			$('#tag-filter-none').click(function(){
-				for (var i = 0; i < tags.length; i++) {
-					activeTags[tags[i]] = false;
+			$('#tag-filter-all').click(function() {
+				for (var tag in tags) {
+					tags[tag] = true;
 				}
 				redraw();
 			});
-			all();
+			$('#tag-filter-none').click(function(){
+				for (var tag in tags) {
+					tags[tag] = false;
+				}
+				redraw();
+			});
+			redraw();
 		},
 		error : genericAjaxError
 	});
