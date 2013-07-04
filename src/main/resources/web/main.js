@@ -111,7 +111,9 @@ var openDoc = function(id) {
 	});
 	
 	var tagsInput = $('#tags');
-	tagsInput.tagit();
+	tagsInput.tagit({
+		availableTags:tags
+	});
 	tagsInput.change(function(){
 		doc.tags = tagsInput.val().split(',');
 		saveDoc(doc);
