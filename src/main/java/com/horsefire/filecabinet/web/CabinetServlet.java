@@ -43,7 +43,8 @@ public class CabinetServlet extends HttpServlet {
 		m_deskPath = deskPath;
 	}
 
-	private Map<String, Map<String, Object>> getDocuments() throws IOException {
+	private Map<String, Map<String, Object>> getDocuments(Set<String> tags)
+			throws IOException {
 		Map<String, Map<String, Object>> docs = new HashMap<String, Map<String, Object>>();
 		for (Document doc : m_cabinet.getDocuments()) {
 			Map<String, Object> docInfo = new HashMap<String, Object>();
@@ -57,16 +58,10 @@ public class CabinetServlet extends HttpServlet {
 			docInfo.put("effective", doc.getEffective().toString("yyyy-MM-dd"));
 
 			docs.put(doc.getId(), docInfo);
-		}
-		return docs;
-	}
 
-	private Set<String> getTags() throws IOException {
-		Set<String> tags = new HashSet<String>();
-		for (Document doc : m_cabinet.getDocuments()) {
 			tags.addAll(doc.getTags());
 		}
-		return tags;
+		return docs;
 	}
 
 	private Map<String, String> getPaths() {
@@ -81,8 +76,9 @@ public class CabinetServlet extends HttpServlet {
 			throws ServletException, IOException {
 		Map<String, Object> properties = new HashMap<String, Object>();
 
-		properties.put("docs", getDocuments());
-		properties.put("tags", getTags());
+		Set<String> tags = new HashSet<String>();
+		properties.put("docs", getDocuments(tags));
+		properties.put("tags", tags);
 		properties.put("paths", getPaths());
 
 		resp.setContentType("text/javascript");
