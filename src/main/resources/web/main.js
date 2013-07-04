@@ -7,10 +7,10 @@ var redraw = function() {
 	var tagNames = Object.keys(tags);
 	tagNames.sort();
 	for (var i = 0; i < tagNames.length; i++) {
-		var tagName = tagNames[i];
-		var element = $('<span class="tag'+( (tags[tagName]) ? ' selected' : '' )+'">'+tagName+'</span>');
+		var element = $('<span class="tag'+( (tags[tagNames[i]]) ? ' selected' : '' )+'">'+tagNames[i]+'</span>');
 		element.click(function(event) {
 			var tmp = $(this);
+			var tagName = tmp.html();
 			if (tmp.hasClass('selected')) {
 				tmp.removeClass('selected');
 				tags[tagName] = false;
