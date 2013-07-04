@@ -16,11 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.io.ByteStreams;
-import com.google.inject.Injector;
-import com.horsefire.filecabinet.FileCabinet;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.horsefire.filecabinet.Options;
 
 @SuppressWarnings("serial")
+@Singleton
 public class EmbeddedFileServlet extends HttpServlet {
 
 	private static final Logger LOG = LoggerFactory
@@ -28,9 +29,9 @@ public class EmbeddedFileServlet extends HttpServlet {
 
 	private final boolean m_debug;
 
-	public EmbeddedFileServlet() {
-		Injector i = FileCabinet.INJECTOR.get();
-		m_debug = i.getInstance(Options.class).debug;
+	@Inject
+	public EmbeddedFileServlet(Options options) {
+		m_debug = options.debug;
 	}
 
 	private void readFile(String filename, String contentType,

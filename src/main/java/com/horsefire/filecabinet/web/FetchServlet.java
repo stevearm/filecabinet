@@ -13,21 +13,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.io.ByteStreams;
-import com.google.inject.Injector;
-import com.horsefire.filecabinet.FileCabinet;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.horsefire.filecabinet.file.Cabinet;
 import com.horsefire.filecabinet.file.Document;
 
 @SuppressWarnings("serial")
+@Singleton
 public class FetchServlet extends HttpServlet {
-
-	public static final String PATH = "/fetch";
 
 	private final Cabinet m_cabinet;
 
-	public FetchServlet() {
-		Injector i = FileCabinet.INJECTOR.get();
-		m_cabinet = i.getInstance(Cabinet.class);
+	@Inject
+	public FetchServlet(Cabinet cabinet) {
+		m_cabinet = cabinet;
 	}
 
 	@Override

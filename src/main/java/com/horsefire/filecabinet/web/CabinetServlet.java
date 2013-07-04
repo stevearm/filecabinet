@@ -1,5 +1,6 @@
 package com.horsefire.filecabinet.web;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
@@ -17,24 +18,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.google.inject.Injector;
-import com.horsefire.filecabinet.FileCabinet;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.horsefire.filecabinet.file.Cabinet;
 import com.horsefire.filecabinet.file.Document;
 
 @SuppressWarnings("serial")
+@Singleton
 public class CabinetServlet extends HttpServlet {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(CabinetServlet.class);
 
-	public static final String PATH = "/cabinet";
-
 	private final Cabinet m_cabinet;
+	private final File m_cabinetPath;
+	private final File m_deskPath;
 
-	public CabinetServlet() {
-		Injector i = FileCabinet.INJECTOR.get();
-		m_cabinet = i.getInstance(Cabinet.class);
+	@Inject
+	public CabinetServlet(Cabinet cabinet, @Named("cabinet") File cabinetPath,
+			@Named("desk") File deskPath) {
+		m_cabinet = cabinet;
+		m_cabinetPath = cabinetPath;
+		m_deskPath = deskPath;
 	}
 
 	private Map<String, Map<String, Object>> getDocuments() throws IOException {
@@ -63,6 +69,13 @@ public class CabinetServlet extends HttpServlet {
 		return tags;
 	}
 
+	private Map<String, String> getPaths() {
+		Map<String, String> result = new HashMap<String, String>();
+		result.put("cabinet", m_cabinetPath.getAbsolutePath());
+		result.put("desk", m_deskPath.getAbsolutePath());
+		return result;
+	}
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -70,6 +83,7 @@ public class CabinetServlet extends HttpServlet {
 
 		properties.put("docs", getDocuments());
 		properties.put("tags", getTags());
+		properties.put("paths", getPaths());
 
 		resp.setContentType("text/javascript");
 		resp.getWriter().println(new Gson().toJson(properties));

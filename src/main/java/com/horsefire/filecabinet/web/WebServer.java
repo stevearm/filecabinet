@@ -1,12 +1,15 @@
 package com.horsefire.filecabinet.web;
 
-import org.eclipse.jetty.server.Handler;
+import java.util.EnumSet;
+
+import javax.servlet.DispatcherType;
+
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.DefaultHandler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.servlet.ServletHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 
 import com.google.inject.Inject;
+import com.google.inject.servlet.GuiceFilter;
 
 public class WebServer {
 
@@ -15,23 +18,16 @@ public class WebServer {
 	@Inject
 	public WebServer() {
 		m_server = new Server(80);
-	}
 
-	private Handler getServletHandler() {
-		ServletHandler handler = new ServletHandler();
-		handler.addServletWithMapping(ShutdownServlet.class,
-				ShutdownServlet.PATH);
-		handler.addServletWithMapping(EmbeddedFileServlet.class, "/");
-		handler.addServletWithMapping(CabinetServlet.class, CabinetServlet.PATH);
-		handler.addServletWithMapping(FetchServlet.class, FetchServlet.PATH);
-		return handler;
+		ServletContextHandler handler = new ServletContextHandler(m_server,
+				"/", ServletContextHandler.NO_SECURITY
+						| ServletContextHandler.NO_SESSIONS);
+		handler.addFilter(GuiceFilter.class, "/*",
+				EnumSet.allOf(DispatcherType.class));
+		handler.addServlet(DefaultServlet.class, "/");
 	}
 
 	public void start() throws Exception {
-		HandlerList handlers = new HandlerList();
-		handlers.setHandlers(new Handler[] { getServletHandler(),
-				new DefaultHandler() });
-		m_server.setHandler(handlers);
 		m_server.start();
 	}
 
