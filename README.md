@@ -6,7 +6,7 @@ This was developed mostly so I could keep track of large collections of bills, d
 
 ## To do
 * Add a bulk export that lets you select some files and download a zip
-** Renaming service for bulk export?
+ * Renaming service for bulk export?
 
 ## Licences
 File Cabinet contains libraries licenced under:
@@ -16,5 +16,5 @@ File Cabinet contains libraries licenced under:
 
 As the LGPL libraries were not modified in any way, they can be released under non-GPL licences, so File Cabinet is licenced under [Apache Licence 2.0][apache20].
 
-[apache20] : http://www.apache.org/licenses/LICENSE-2.0.html
-[lgpl] : http://www.gnu.org/copyleft/lesser.html
+[apache20]: http://www.apache.org/licenses/LICENSE-2.0.html
+[lgpl]: http://www.gnu.org/copyleft/lesser.html
