@@ -14,18 +14,12 @@
 	</parent>
 
 	<properties>
-		<util.version>1.2</util.version>
 		<jetty.version>9.0.3.v20130506</jetty.version>
 		<guice.version>3.0</guice.version>
 	</properties>
 
 	<dependencies>
 		<!-- Runtime dependencies -->
-		<dependency>
-			<groupId>com.horsefire</groupId>
-			<artifactId>util</artifactId>
-			<version>${util.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
@@ -70,7 +64,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-assistedinject</artifactId>
+			<artifactId>guice-servlet</artifactId>
 			<version>${guice.version}</version>
 		</dependency>
 
@@ -82,13 +76,6 @@
 		</dependency>
 
 		<!-- Test dependencies -->
-		<dependency>
-			<groupId>com.horsefire</groupId>
-			<artifactId>util</artifactId>
-			<version>${util.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -146,5 +133,14 @@
 			<url>http://horsefire.s3.amazonaws.com/maven</url>
 		</repository>
 	</repositories>
+	
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly OSS license</comments>
+		</license>
+	</licenses>
 
 </project>
