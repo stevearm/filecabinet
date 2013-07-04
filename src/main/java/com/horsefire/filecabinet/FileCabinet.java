@@ -12,22 +12,26 @@ import com.horsefire.filecabinet.web.WebServer;
 public class FileCabinet {
 
 	private final WebServer m_server;
+	private final Importer m_importer;
 	private final AtomicBoolean m_shutdown;
 
 	@Inject
-	public FileCabinet(WebServer server,
+	public FileCabinet(WebServer server, Importer importer,
 			@Named("shutdown-monitor") AtomicBoolean shutdown) {
 		m_server = server;
+		m_importer = importer;
 		m_shutdown = shutdown;
 	}
 
 	public void run() throws Exception {
 		m_server.start();
+		m_importer.start();
 
 		while (!m_shutdown.get()) {
 			Thread.sleep(1000);
 		}
 		m_server.shutdown();
+		m_importer.shutdown();
 	}
 
 	public static void main(String[] args) throws Exception {

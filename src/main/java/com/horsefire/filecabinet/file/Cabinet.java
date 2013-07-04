@@ -75,6 +75,11 @@ public class Cabinet {
 		File documentFile = new File(dir, sha1 + "." + Document.EXT_RAW);
 
 		String filename = file.getName();
+		Files.copy(file, documentFile);
+		if (!file.delete()) {
+			LOG.error("Could not delete {}", file);
+		}
+
 		Document doc;
 		if (filename.endsWith("pdf")) {
 			doc = new PdfDocument(dir, sha1);
@@ -82,9 +87,6 @@ public class Cabinet {
 			throw new UnsupportedOperationException("Unsupported file type: "
 					+ filename);
 		}
-
-		Files.copy(file, documentFile);
-
 		doc.setFilename(filename);
 		doc.createThumbnail();
 

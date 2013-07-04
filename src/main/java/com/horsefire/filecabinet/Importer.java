@@ -26,7 +26,7 @@ public class Importer {
 		m_desk = desk;
 	}
 
-	public void schedule() {
+	public void start() {
 		m_timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
