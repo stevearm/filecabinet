@@ -29,12 +29,22 @@ var redraw = function() {
 	newFiles.empty();
 	for (var id in docs) {
 		var doc = docs[id];
-		var html = '<div class="doc" onclick="openDoc(\''+id+'\')">';
+		var docElement = $('<div class="doc"></div>');
+		docElement.click(function(id){
+			return function(event) {
+				if (!$(event.target).is("a")) {
+					openDoc(id);
+				}
+			}
+		}(doc.id));
+		
+		var html = '<div class="thumb">';
 		if (doc.thumb) {
-			html += '<img class="thumb" src="/fetch?id='+id+'&type=thumb"/>';
+			html += '<img src="/fetch?id='+id+'&type=thumb"/>';
 		} else {
 			html += 'No thumb';
 		}
+		html += '<br><a href="/fetch?id='+id+'&type=raw" target="_blank">Download</a></div>';
 		html += '<div><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
 		html += '<div><span class="key">Uploaded</span><span class="value">'+doc.uploaded+'</span></div>';
 		html += '<div><span class="key">Effective</span><span class="value">'+doc.effective+'</span></div>';
@@ -56,12 +66,12 @@ var redraw = function() {
 			}
 		}
 		html += '</ul>';
-		html += '</div>';
+		docElement.html(html);
 		if (doc.unseen) {
-			newFiles.append(html);
+			newFiles.append(docElement);
 		}
 		if (tagsAreSelected) {
-			files.append(html);
+			files.append(docElement);
 		}
 	}
 	if (newFiles.children().size() == 0) {
@@ -83,6 +93,7 @@ var openDoc = function(id) {
 		html += '<button onclick="generateThumb(\''+id+'\');">Generate</button>'
 	}
 	html += '</div>';
+	html += '<div><a href="/fetch?id='+id+'&type=raw" target="_blank">Download file</a></div>';
 	html += '<div><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
 	html += '<div><span class="key">Uploaded</span><span class="value">'+doc.uploaded+'</span></div>';
 	html += '<div><span class="key">Effective</span><span class="value"><input type="text" id="effective-date" size="20" value="'+doc.effective+'"/></span></div>';

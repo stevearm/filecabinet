@@ -64,8 +64,17 @@
 
 .thumb {
 	display: inline-block;
-	height: 135px;
 	float: right;
+	text-align: center;
+}
+
+.thumb > img {
+	height: 135px;
+}
+
+.thumb > a {
+	color: #000;
+	font-size: small;
 }
 
 .doc ul {
