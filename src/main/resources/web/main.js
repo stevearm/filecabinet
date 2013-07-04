@@ -136,7 +136,7 @@ var saveDoc = function(doc) {
 		data:{
 			id:doc.id,
 			action:"saveDoc",
-			unseed:doc.unseen,
+			unseen:doc.unseen,
 			tags:doc.tags,
 			effective:doc.effective
 		},
