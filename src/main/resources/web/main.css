@@ -1,6 +1,6 @@
 #fade {
 	display: none;
-	position: absolute;
+	position: fixed;
 	top: 0%;
 	left: 0%;
 	width: 100%;
@@ -14,11 +14,11 @@
  
 #light {
 	display: none;
-	position: absolute;
+	position: fixed;
 	top: 100px;
 	left: 100px;
-	width: 1000px;
-	height: 400px;
+	width: 400px;
+	height: 450px;
 	padding: 16px 16px 16px 500px;
 	border: 8px solid blue;
 	background-color: white;
@@ -75,6 +75,22 @@
 	margin: 2px;
 	padding: 5px;
 	border-radius: 5px;
+}
+
+#tag-filter {
+	margin: 5px 0px;
+}
+
+.tag {
+	border: 2px #707070 solid;
+	border-radius: 5px;
+	margin: 2px;
+	cursor: pointer;
+}
+
+.tag.selected {
+	color: #fff;
+	background-color: #707070;
 }
 
 /********************** Full image **************************/
