@@ -6,7 +6,11 @@
 		<link rel="stylesheet" type="text/css" href="/?file=main.css"/>
 	</head>
 	<body>
-		<button style="float: right" onclick="$.ajax({url:'/shutdown'});">Shutdown</button>
+		<div style="float: right">
+			<span id="all-files-path"></span> | 
+			<span id="new-files-path"></span> |
+			<button onclick="$.ajax({url:'/shutdown'});">Shutdown</button>
+		</div>
 		<div id="new" style="display: none">
 			<h1>New files</h1>
 			<div></div>

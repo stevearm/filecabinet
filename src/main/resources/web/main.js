@@ -177,6 +177,8 @@ $(document).ready(function() {
 		success : function(json) {
 			docs = json.docs;
 			tags = json.tags;
+			$('#all-files-path').html("All files: "+json.paths.cabinet);
+			$('#new-files-path').html("New files: "+json.paths.desk);
 			var all = function() {
 				for (var i = 0; i < tags.length; i++) {
 					activeTags[tags[i]] = true;
