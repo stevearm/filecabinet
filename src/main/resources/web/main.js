@@ -41,9 +41,19 @@ var redraw = function() {
 		html += '<ul>';
 		
 		var tagsAreSelected = false;
-		for (var i = 0; i < doc.tags.length; i++) {
-			if (tags[doc.tags[i]]) { tagsAreSelected = true; }
-			html += '<li>'+doc.tags[i]+'</li>';
+		if (doc.tags.length > 0) {
+			for (var i = 0; i < doc.tags.length; i++) {
+				if (tags[doc.tags[i]]) { tagsAreSelected = true; }
+				html += '<li>'+doc.tags[i]+'</li>';
+			}
+		} else {
+			// Special case for untagged docs
+			tagsAreSelected = true;
+			for (var tagName in tags) {
+				if (tags[tagName]) {
+					tagsAreSelected = false;
+				}
+			}
 		}
 		html += '</ul>';
 		html += '</div>';
