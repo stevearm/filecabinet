@@ -21,10 +21,19 @@ public class FcModule extends ServletModule {
 	@Override
 	protected void configureServlets() {
 		bind(Options.class).toInstance(m_options);
+
+		File cabinet = new File("files");
+		File desk = new File("incoming");
+
+		if (m_options.debug) {
+			File target = new File("target");
+			cabinet = new File(target, "files");
+			desk = new File(target, "incoming");
+		}
+
 		bind(File.class).annotatedWith(Names.named("cabinet")).toInstance(
-				new File("cabinet"));
-		bind(File.class).annotatedWith(Names.named("desk")).toInstance(
-				new File("desk"));
+				cabinet);
+		bind(File.class).annotatedWith(Names.named("desk")).toInstance(desk);
 
 		bind(AtomicBoolean.class)
 				.annotatedWith(Names.named("shutdown-monitor")).toInstance(
