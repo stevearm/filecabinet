@@ -13,8 +13,11 @@ File Cabinet contains libraries licenced under:
 
 * [Apache Licence 2.0][apache20] (Jetty, Gson, Guava, Joda-Time, JCommander)
 * [Gnu Lesser General Public Licence LGPL][lgpl] (org.swinglabs.pdf-renderer, Logback)
+* MIT Licences ([Tag-it][mit-tagit], [jQuery & jQuery-UI][mit-jquery]
 
 As the LGPL libraries were not modified in any way, they can be released under non-GPL licences, so File Cabinet is licenced under [Apache Licence 2.0][apache20].
 
 [apache20]: http://www.apache.org/licenses/LICENSE-2.0.html
 [lgpl]: http://www.gnu.org/copyleft/lesser.html
+[mit-tagit]: http://aehlke.github.com/tag-it/LICENSE
+[mit-jquery]: https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt
