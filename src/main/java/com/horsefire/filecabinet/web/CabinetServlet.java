@@ -108,7 +108,10 @@ public class CabinetServlet extends HttpServlet {
 			String[] parameterValues = req.getParameterValues("tags");
 			if (parameterValues != null) {
 				for (String tag : parameterValues) {
-					tagSet.add(tag.toLowerCase().trim());
+					String trimmedTag = tag.toLowerCase().trim();
+					if (!trimmedTag.isEmpty()) {
+						tagSet.add(trimmedTag);
+					}
 				}
 			}
 			if (!doc.getTags().equals(tagSet)) {
