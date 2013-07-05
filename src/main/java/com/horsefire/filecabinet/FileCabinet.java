@@ -56,9 +56,21 @@ public class FileCabinet {
 	public static void main(String[] args) throws Exception {
 		Options options = new Options();
 		try {
-			new JCommander(options, args);
+			JCommander jc = new JCommander(options, args);
+			jc.setProgramName("java -jar filecabinet.jar");
+
+			if (options.help) {
+				jc.usage();
+				return;
+			}
+
+			if (options.version) {
+				System.out.println("File Cabinet 1.0");
+				return;
+			}
 		} catch (ParameterException e) {
 			System.err.println(e.getMessage());
+			System.err.println("Use --help to display usage");
 			return;
 		}
 
