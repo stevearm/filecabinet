@@ -29,16 +29,9 @@ var redraw = function() {
 	newFiles.empty();
 	for (var id in docs) {
 		var doc = docs[id];
-		var docElement = $('<div class="doc"></div>');
-		docElement.click(function(id){
-			return function(event) {
-				if (!$(event.target).is("a")) {
-					openDoc(id);
-				}
-			}
-		}(doc.id));
 		
-		var html = '<div class="thumb">';
+		var html = '<div class="doc">';
+		html += '<div class="thumb">';
 		if (doc.thumb) {
 			html += '<img src="/fetch?id='+id+'&type=thumb"/>';
 		} else {
@@ -66,11 +59,24 @@ var redraw = function() {
 			}
 		}
 		html += '</ul>';
-		docElement.html(html);
+		html += '</div>';
+		
+		var clickListener = function(id){
+			return function(event) {
+				if (!$(event.target).is("a")) {
+					openDoc(id);
+				}
+			}
+		}(id);
+		
 		if (doc.unseen) {
+			var docElement = $(html);
+			docElement.click(clickListener);
 			newFiles.append(docElement);
 		}
 		if (tagsAreSelected) {
+			var docElement = $(html);
+			docElement.click(clickListener);
 			files.append(docElement);
 		}
 	}
