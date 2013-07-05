@@ -65,7 +65,7 @@ public class FileCabinet {
 			}
 
 			if (options.version) {
-				System.out.println("File Cabinet 1.0");
+				System.out.println("File Cabinet SNAPSHOT");
 				return;
 			}
 		} catch (ParameterException e) {
