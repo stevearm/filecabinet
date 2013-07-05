@@ -63,6 +63,12 @@ public class Cabinet {
 	}
 
 	public void addDocument(File file) throws IOException {
+		String filename = file.getName();
+		if (!filename.endsWith("pdf")) {
+			throw new UnsupportedOperationException("Unsupported file type: "
+					+ filename);
+		}
+
 		String sha1 = sha1(file);
 		File dir = new File(m_baseDir, sha1.substring(0, 2));
 		if (!dir.isDirectory()) {
@@ -74,19 +80,12 @@ public class Cabinet {
 		}
 		File documentFile = new File(dir, sha1 + "." + Document.EXT_RAW);
 
-		String filename = file.getName();
 		Files.copy(file, documentFile);
 		if (!file.delete()) {
 			LOG.error("Could not delete {}", file);
 		}
 
-		Document doc;
-		if (filename.endsWith("pdf")) {
-			doc = new PdfDocument(dir, sha1);
-		} else {
-			throw new UnsupportedOperationException("Unsupported file type: "
-					+ filename);
-		}
+		Document doc = new PdfDocument(dir, sha1);
 		doc.setFilename(filename);
 		doc.createThumbnail();
 
