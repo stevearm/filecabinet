@@ -74,7 +74,7 @@ var redraw = function() {
 			docElement.click(clickListener);
 			newFiles.append(docElement);
 		}
-		if (tagsAreSelected) {
+		if (tagsAreSelected && !doc.unseen) {
 			var docElement = $(html);
 			docElement.click(clickListener);
 			files.append(docElement);
