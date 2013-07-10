@@ -65,7 +65,9 @@ public class FileCabinet {
 			}
 
 			if (options.version) {
-				System.out.println("File Cabinet SNAPSHOT");
+				String version = FileCabinet.class.getPackage()
+						.getImplementationVersion();
+				System.out.println("File Cabinet " + version);
 				return;
 			}
 		} catch (ParameterException e) {

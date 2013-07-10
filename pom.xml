@@ -104,6 +104,8 @@
 					<archive>
 						<manifest>
 							<mainClass>com.horsefire.filecabinet.FileCabinet</mainClass>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
 					</archive>
 				</configuration>
