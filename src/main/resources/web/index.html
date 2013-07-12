@@ -25,11 +25,18 @@
 			<span id="tag-filter-from" class="tag">Effective from <input type="text" size="10"/></span>
 			<span id="tag-filter-to" class="tag">Effective to <input type="text" size="10"/></span>
 			<span id="tag-sort-order" class="tag">Newest first</span>
+			<span id="archive-download-link" class="tag">Download files</span>
 		</div>
 		<div id="files"></div>
 
 		<div id="light"></div>
 		<div id="fade"></div>
+
+		<div style="diplay: none">
+			<form method="post" action="/archive" id="archive-download-form">
+				<input type="text" name="ids" value="" />
+			</form>
+		</div>
 
 		<script src="/?file=jquery-1.10.1.min.js"></script>
 		<script src="/?file=jquery-ui-1.10.3.min.js"></script>

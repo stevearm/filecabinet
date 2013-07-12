@@ -7,6 +7,7 @@ var dates = {
 	toEnabled : false,
 	newestFirst : false
 };
+var docIdsDisplayed = [];
 
 var renderDoc = function(doc, cache) {
 	if (cache[doc.id] == null) {
@@ -122,10 +123,12 @@ var redraw = function() {
 	var renders = {};
 
 	// Render all files
+	docIdsDisplayed = [];
 	var allFilesNode = $('#files');
 	allFilesNode.empty();
 	for (var i = 0; i < allFiles.length; i++) {
 		var doc = allFiles[i];
+		docIdsDisplayed.push(doc.id);
 		var render = renderDoc(doc, renders);
 		var docElement = $(render.html);
 		docElement.click(render.clickListener);
@@ -384,6 +387,13 @@ $(document).ready(function() {
 					redraw();
 				};
 			}(dateElement));
+
+			// Download
+			$('#archive-download-link').click(function() {
+				var form = $('#archive-download-form');
+				form.find('input[name="ids"]').val(docIdsDisplayed);
+				form.submit();
+			});
 
 			redraw();
 		},
