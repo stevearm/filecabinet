@@ -1,5 +1,45 @@
 var docs = null;
 var tags = {};
+var dates = {
+	from : null,
+	fromEnabled : false,
+	to : null,
+	toEnabled : false,
+	newestFirst : false
+};
+
+var renderDoc = function(doc, cache) {
+	if (cache[doc.id] == null) {
+		var render = {
+			clickListener : function(id){
+				return function(event) {
+					if (!$(event.target).is("a")) {
+						openDoc(id);
+					}
+				}
+			}(doc.id),
+			html : ""
+		};
+		render.html = '<div class="doc">';
+		render.html +=  '<div class="thumb">';
+		render.html +=    doc.thumb ? '<img src="/fetch?id='+doc.id+'&type=thumb"/>' : 'No thumb';
+		render.html +=    '<br><a href="/fetch?id='+doc.id+'&type=raw" target="_blank">Download</a>';
+		render.html +=  '</div>';
+		render.html +=  '<div><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
+		render.html +=  '<div><span class="key">Uploaded</span><span class="value">'+doc.uploaded+'</span></div>';
+		render.html +=  '<div><span class="key">Effective</span><span class="value">'+doc.effective+'</span></div>';
+		render.html +=  '<ul>';
+
+		for (var i = 0; i < doc.tags.length; i++) {
+			render.html += '<li>'+doc.tags[i]+'</li>';
+		}
+		render.html += '</ul>';
+		render.html += '</div>';
+
+		cache[doc.id] = render;
+	}
+	return cache[doc.id];
+};
 
 var redraw = function() {
 	var tagFilter = $('#tag-filter');
@@ -23,66 +63,88 @@ var redraw = function() {
 		tagFilter.append(element);
 	}
 	
-	var files = $('#files');
-	files.empty();
-	var newFiles = $('#new > div');
-	newFiles.empty();
+	// Filter docs for display
+	var allFiles = [];
+	var newFiles = [];
 	for (var id in docs) {
 		var doc = docs[id];
-		
-		var html = '<div class="doc">';
-		html += '<div class="thumb">';
-		if (doc.thumb) {
-			html += '<img src="/fetch?id='+id+'&type=thumb"/>';
-		} else {
-			html += 'No thumb';
-		}
-		html += '<br><a href="/fetch?id='+id+'&type=raw" target="_blank">Download</a></div>';
-		html += '<div><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
-		html += '<div><span class="key">Uploaded</span><span class="value">'+doc.uploaded+'</span></div>';
-		html += '<div><span class="key">Effective</span><span class="value">'+doc.effective+'</span></div>';
-		html += '<ul>';
-		
-		var tagsAreSelected = false;
-		if (doc.tags.length > 0) {
-			for (var i = 0; i < doc.tags.length; i++) {
-				if (tags[doc.tags[i]]) { tagsAreSelected = true; }
-				html += '<li>'+doc.tags[i]+'</li>';
+
+		// Filter out by tags
+		var showInAll = false;
+		for (var i = 0; i < doc.tags.length; i++) {
+			if (tags[doc.tags[i]]) {
+				showInAll = true;
+				break;
 			}
-		} else {
+		}
+		if (doc.tags.length == 0) {
 			// Special case for untagged docs
-			tagsAreSelected = true;
+			showInAll = true;
 			for (var tagName in tags) {
 				if (tags[tagName]) {
-					tagsAreSelected = false;
+					showInAll = false;
+					break;
 				}
 			}
 		}
-		html += '</ul>';
-		html += '</div>';
 		
-		var clickListener = function(id){
-			return function(event) {
-				if (!$(event.target).is("a")) {
-					openDoc(id);
-				}
+		// Filter by date
+		if (showInAll && dates.fromEnabled) {
+			if (doc.effective < dates.from) {
+				showInAll = false;
 			}
-		}(id);
-		
+		}
+		if (showInAll && dates.toEnabled) {
+			if (dates.to < doc.effective) {
+				showInAll = false;
+			}
+		}
+
+		if (showInAll) {
+			allFiles.push(doc);
+		}
+
 		if (doc.unseen) {
-			var docElement = $(html);
-			docElement.click(clickListener);
-			newFiles.append(docElement);
-		}
-		if (tagsAreSelected && !doc.unseen) {
-			var docElement = $(html);
-			docElement.click(clickListener);
-			files.append(docElement);
+			newFiles.push(doc);
 		}
 	}
-	if (newFiles.children().size() == 0) {
+
+	// Sort allFiles and newFiles
+	var comparator = function(a,b) {
+		if (a.effective < b.effective) return dates.newestFirst ? 1 : -1;
+		if (a.effective > b.effective) return dates.newestFirst ? -1 : 1;
+		return 0;
+	};
+	allFiles.sort(comparator);
+	newFiles.sort(comparator);
+
+	// Cache rendering
+	var renders = {};
+
+	// Render all files
+	var allFilesNode = $('#files');
+	allFilesNode.empty();
+	for (var i = 0; i < allFiles.length; i++) {
+		var doc = allFiles[i];
+		var render = renderDoc(doc, renders);
+		var docElement = $(render.html);
+		docElement.click(render.clickListener);
+		allFilesNode.append(docElement);
+	}
+
+	// Render new files
+	var newFilesNode = $('#new > div');
+	newFilesNode.empty();
+	if (newFiles.length == 0) {
 		$('#new').hide();
 	} else {
+		for (var i = 0; i < newFiles.length; i++) {
+			var doc = newFiles[i];
+			var render = renderDoc(doc, renders);
+			var docElement = $(render.html);
+			docElement.click(render.clickListener);
+			newFilesNode.append(docElement);
+		}
 		$('#new').show();
 	}
 };
@@ -91,7 +153,7 @@ var openDoc = function(id) {
 	var doc = docs[id];
 	var lightNode = $('#light');
 	lightNode.empty();
-	
+
 	var html = '<div id="full-image-viewport">';
 	if (doc.thumb) {
 		html += '<img id="full-image" src="/fetch?id='+id+'&type=thumb"/>';
@@ -108,7 +170,7 @@ var openDoc = function(id) {
 	}
 	html += '<input name="tags" id="tags" style="position:relative" value="'+doc.tags.join(',')+'"/>';
 	lightNode.append(html);
-	
+
 	if (doc.thumb) {
 		$('#full-image').draggable({
 			drag: function(event, ui) {
@@ -121,7 +183,7 @@ var openDoc = function(id) {
 			}
 		});
 	}
-	
+
 	var effectiveDate = $('#effective-date');
 	effectiveDate.datepicker({
 		dateFormat: "yy-mm-dd"
@@ -130,13 +192,13 @@ var openDoc = function(id) {
 		doc.effective = effectiveDate.val();
 		saveDoc(doc);
 	});
-	
+
 	$('#unseen > span.value > button').click(function(){
 		doc.unseen = false;
 		saveDoc(doc);
 		$('#unseen').remove();
 	});
-	
+
 	var tagsInput = $('#tags');
 	tagsInput.tagit({
 		autocomplete: {
@@ -160,7 +222,7 @@ var openDoc = function(id) {
 			}
 		}
 	});
-	
+
 	lightNode.show();
 	$('#fade').show();
 };
@@ -214,6 +276,18 @@ var genericAjaxError = function(req, response) {
 	console.log("Failed request " + response, req);
 };
 
+var renderDate = function(date) {
+	var month = "" + (date.getMonth() + 1);
+	if (month.length == 1) {
+		month = "0" + month;
+	}
+	var day = "" + date.getDate();
+	if (day.length == 1) {
+		day = "0" + day;
+	}
+	return (1900 + date.getYear()) + "-" + month + "-" + day;
+};
+
 $(document).ready(function() {
 	$.ajax({
 		url : "/cabinet",
@@ -239,11 +313,83 @@ $(document).ready(function() {
 				}
 				redraw();
 			});
+
+			// Date from
+			var dateElement = $('#tag-filter-from');
+			dateElement.click(function(element) {
+				return function() {
+					if ($(event.target).is("input")) { return; }
+					if (dates.fromEnabled) {
+						dates.fromEnabled = false;
+						element.removeClass('selected');
+					} else {
+						dates.fromEnabled = true;
+						element.addClass('selected');
+					}
+					redraw();
+				};
+			}(dateElement));
+			dateElement = $('#tag-filter-from input');
+			var date = new Date();
+			date.setDate(date.getDate() - 30);
+			dateElement.val(renderDate(date));
+			dateElement.datepicker({ dateFormat: "yy-mm-dd" });
+			dateElement.change(function(){
+				var element = $(this);
+				dates.from = element.val();
+				if (dates.fromEnabled && dates.toEnabled && dates.from > dates.to) {
+					element.click();
+				}
+				redraw();
+			});
+
+			// Date to
+			dateElement = $('#tag-filter-to');
+			dateElement.click(function(element) {
+				return function() {
+					if ($(event.target).is("input")) { return; }
+					if (dates.toEnabled) {
+						dates.toEnabled = false;
+						element.removeClass('selected');
+					} else {
+						dates.toEnabled = true;
+						element.addClass('selected');
+					}
+					redraw();
+				};
+			}(dateElement));
+			dateElement = $('#tag-filter-to > input');
+			dateElement.val(renderDate(new Date()));
+			dateElement.datepicker({ dateFormat: "yy-mm-dd" });
+			dateElement.change(function(){
+				var element = $(this);
+				dates.to = element.val();
+				if (dates.fromEnabled && dates.toEnabled && dates.from > dates.to) {
+					element.click();
+				}
+				redraw();
+			});
+
+			// Sort
+			dateElement = $('#tag-sort-order');
+			dateElement.click(function(element) {
+				return function() {
+					if (dates.newestFirst) {
+						dates.newestFirst = false;
+						element.html('Oldest first');
+					} else {
+						dates.newestFirst = true;
+						element.html('Newest first');
+					}
+					redraw();
+				};
+			}(dateElement));
+
 			redraw();
 		},
 		error : genericAjaxError
 	});
-	
+
 	$(document).keydown(function(e){
 		if(e.keyCode == 27){
 			closeDoc();

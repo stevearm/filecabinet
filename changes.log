@@ -4,6 +4,7 @@
 * Support large scanned jpgs/pngs instead of just pdfs
 
 # Unreleased
+* Sort and filter by effective date
 
 # 1.0 - 2013-07-05
 * Run standalone server from jar
