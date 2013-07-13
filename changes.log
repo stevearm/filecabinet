@@ -1,9 +1,9 @@
 # To do
-* Add a bulk export that lets you select some files and download a zip
- * Renaming service for bulk export?
 * Support large scanned jpgs/pngs instead of just pdfs
 
-# Unreleased
+# Finished but not released
+
+# 1.1 - 2013-07-13
 * Sort and filter by effective date
 * Download all currently displayed docs as a zip file
 * Allow user to specify a filename pattern for files inside zip
