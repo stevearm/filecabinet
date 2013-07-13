@@ -9,7 +9,7 @@
 		<div style="float: right">
 			<span id="all-files-path"></span> | 
 			<span id="new-files-path"></span> |
-			<button onclick="$.ajax({url:'/shutdown'});">Shutdown</button>
+			<button onclick="$.ajax({url:'/shutdown',error:function(){alert('Failed to shutdown');}});">Shutdown</button>
 		</div>
 		<div id="new" style="display: none">
 			<h1>New files</h1>
