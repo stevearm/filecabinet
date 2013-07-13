@@ -390,7 +390,9 @@ $(document).ready(function() {
 
 			// Download
 			$('#archive-download-link').click(function() {
+				if ($(event.target).is("input")) { return; }
 				var form = $('#archive-download-form');
+				form.find('input[name="pattern"]').val($('#archive-download-link > input').val());
 				form.find('input[name="ids"]').val(docIdsDisplayed);
 				form.submit();
 			});

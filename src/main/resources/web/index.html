@@ -25,7 +25,14 @@
 			<span id="tag-filter-from" class="tag">Effective from <input type="text" size="10"/></span>
 			<span id="tag-filter-to" class="tag">Effective to <input type="text" size="10"/></span>
 			<span id="tag-sort-order" class="tag">Newest first</span>
-			<span id="archive-download-link" class="tag">Download files</span>
+			<span id="archive-download-link" class="tag">
+				Download files with pattern
+				<input type="text" size="15" value="%y-%m-%d-%t.pdf">
+			</span>
+			<b>%y</b>ear,
+			<b>%m</b>onth,
+			<b>%d</b>ay,
+			<b>%t</b>ags
 		</div>
 		<div id="files"></div>
 
@@ -35,6 +42,7 @@
 		<div style="display: none">
 			<form method="post" action="/archive" id="archive-download-form">
 				<input type="text" name="ids" value="" />
+				<input type="text" name="pattern" value="" />
 			</form>
 		</div>
 
