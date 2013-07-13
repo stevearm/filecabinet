@@ -20,16 +20,19 @@ public class FileCabinet {
 	private final AtomicBoolean m_shutdown;
 	private final File m_deskDir;
 	private final File m_cabinetDir;
+	private final Options m_options;
 
 	@Inject
 	public FileCabinet(WebServer server, Importer importer,
 			@Named("shutdown-monitor") AtomicBoolean shutdown,
-			@Named("desk") File deskDir, @Named("cabinet") File cabinetDir) {
+			@Named("desk") File deskDir, @Named("cabinet") File cabinetDir,
+			Options options) {
 		m_server = server;
 		m_importer = importer;
 		m_shutdown = shutdown;
 		m_deskDir = deskDir;
 		m_cabinetDir = cabinetDir;
+		m_options = options;
 	}
 
 	public void run() throws Exception {
@@ -48,6 +51,13 @@ public class FileCabinet {
 
 		m_server.start();
 		m_importer.start();
+
+		// Open the webpage
+		String os = System.getenv().get("OS");
+		if (!m_options.debug && os != null
+				&& os.toLowerCase().contains("windows")) {
+			Runtime.getRuntime().exec("explorer.exe http://localhost/");
+		}
 
 		while (!m_shutdown.get()) {
 			Thread.sleep(1000);

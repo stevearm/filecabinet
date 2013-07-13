@@ -2,6 +2,7 @@
 * Support large scanned jpgs/pngs instead of just pdfs
 
 # Finished but not released
+* Open localhost in browser when jar is run
 
 # 1.1 - 2013-07-13
 * Sort and filter by effective date
