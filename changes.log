@@ -7,6 +7,9 @@
 * Sort and filter by effective date
 * Download all currently displayed docs as a zip file
 * Allow user to specify a filename pattern for files inside zip
+* Improve logging
+* Allow --exportLogConfig to write out filecabinet.xml
+* If filecabinet.xml exists in same directory as jar, use it for log config
 
 # 1.0 - 2013-07-05
 * Run standalone server from jar

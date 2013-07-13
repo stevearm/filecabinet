@@ -1,10 +1,13 @@
 package com.horsefire.filecabinet;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import com.google.common.io.ByteStreams;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -70,6 +73,27 @@ public class FileCabinet {
 				System.out.println("File Cabinet " + version);
 				return;
 			}
+
+			File externalLogConfig = new File("filecabinet.xml");
+			if (options.exportLogConfig) {
+				InputStream in = Thread.currentThread().getContextClassLoader()
+						.getResourceAsStream("logback.xml");
+				FileOutputStream out = new FileOutputStream(new File(
+						"filecabinet.xml"));
+				try {
+					ByteStreams.copy(in, out);
+				} finally {
+					in.close();
+					out.close();
+				}
+				return;
+			}
+
+			if (externalLogConfig.isFile()) {
+				System.setProperty("logback.configurationFile",
+						externalLogConfig.getAbsolutePath());
+			}
+
 		} catch (ParameterException e) {
 			System.err.println(e.getMessage());
 			System.err.println("Use --help to display usage");

@@ -12,4 +12,7 @@ public class Options {
 
 	@Parameter(names = { "-v", "--version" }, description = "Display version", help = true)
 	public boolean version = false;
+
+	@Parameter(names = { "--exportLogConfig" }, description = "Export log config file")
+	public boolean exportLogConfig = false;
 }
