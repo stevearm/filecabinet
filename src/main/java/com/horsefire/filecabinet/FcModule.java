@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.google.inject.name.Names;
 import com.google.inject.servlet.ServletModule;
+import com.horsefire.filecabinet.web.ArchiveServlet;
 import com.horsefire.filecabinet.web.CabinetServlet;
 import com.horsefire.filecabinet.web.EmbeddedFileServlet;
 import com.horsefire.filecabinet.web.FetchServlet;
@@ -42,6 +43,7 @@ public class FcModule extends ServletModule {
 		serve("/shutdown").with(ShutdownServlet.class);
 		serve("/cabinet").with(CabinetServlet.class);
 		serve("/fetch").with(FetchServlet.class);
+		serve("/archive").with(ArchiveServlet.class);
 		serve("/").with(EmbeddedFileServlet.class);
 	}
 }
