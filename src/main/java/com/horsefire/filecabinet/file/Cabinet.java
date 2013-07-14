@@ -87,7 +87,9 @@ public class Cabinet {
 
 		Document doc = new PdfDocument(dir, sha1);
 		doc.setFilename(filename);
-		doc.createThumbnail();
+		if (!doc.hasThumbnail()) {
+			doc.createThumbnail();
+		}
 
 		LOG.debug("Imported {} to {}", file, documentFile);
 	}
