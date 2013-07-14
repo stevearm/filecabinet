@@ -18,7 +18,7 @@ public class Importer {
 
 	private final Cabinet m_cabinet;
 	private final File m_desk;
-	private final Timer m_timer = new Timer();
+	private final Timer m_timer = new Timer("importer");
 
 	@Inject
 	public Importer(Cabinet cabinet, @Named("desk") File desk) {
