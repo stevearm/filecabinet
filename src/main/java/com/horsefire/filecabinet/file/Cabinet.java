@@ -64,9 +64,9 @@ public class Cabinet {
 
 	public void addDocument(File file) throws IOException {
 		String filename = file.getName();
-		if (!filename.endsWith("pdf")) {
-			throw new UnsupportedOperationException("Unsupported file type: "
-					+ filename);
+		if (!filename.substring(filename.length() - 3).toLowerCase()
+				.equals("pdf")) {
+			throw new IOException("Unsupported file type: " + filename);
 		}
 
 		String sha1 = sha1(file);
