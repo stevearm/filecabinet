@@ -72,19 +72,21 @@ var redraw = function() {
 
 		// Filter out by tags
 		var showInAll = false;
-		for (var i = 0; i < doc.tags.length; i++) {
-			if (tags[doc.tags[i]]) {
-				showInAll = true;
-				break;
-			}
-		}
-		if (doc.tags.length == 0) {
-			// Special case for untagged docs
-			showInAll = true;
-			for (var tagName in tags) {
-				if (tags[tagName]) {
-					showInAll = false;
+		if (!doc.unseen) {
+			for (var i = 0; i < doc.tags.length; i++) {
+				if (tags[doc.tags[i]]) {
+					showInAll = true;
 					break;
+				}
+			}
+			if (doc.tags.length == 0) {
+				// Special case for untagged docs
+				showInAll = true;
+				for (var tagName in tags) {
+					if (tags[tagName]) {
+						showInAll = false;
+						break;
+					}
 				}
 			}
 		}
