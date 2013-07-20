@@ -5,7 +5,7 @@ var dates = {
 	fromEnabled : false,
 	to : null,
 	toEnabled : false,
-	newestFirst : false
+	newestFirst : true
 };
 var docIdsDisplayed = [];
 
