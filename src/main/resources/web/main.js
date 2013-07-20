@@ -26,7 +26,7 @@ var renderDoc = function(doc, cache) {
 		render.html +=    doc.thumb ? '<img src="/fetch?id='+doc.id+'&type=thumb"/>' : 'No thumb';
 		render.html +=    '<br><a href="/fetch?id='+doc.id+'&type=raw" target="_blank">Download</a>';
 		render.html +=  '</div>';
-		render.html +=  '<div><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
+		render.html +=  '<div class="filename"><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
 		render.html +=  '<div><span class="key">Uploaded</span><span class="value">'+doc.uploaded+'</span></div>';
 		render.html +=  '<div><span class="key">Effective</span><span class="value">'+doc.effective+'</span></div>';
 		render.html +=  '<ul>';
