@@ -1,5 +1,5 @@
-/.classpath
-/.project
-/.settings
-/target
-/*.launch
+/worker/.classpath
+/worker/.project
+/worker/.settings
+/worker/target
+/worker/*.launch
