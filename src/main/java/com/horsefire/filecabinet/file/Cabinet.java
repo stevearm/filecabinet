@@ -7,9 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,7 @@ public class Cabinet {
 	}
 
 	private final File m_baseDir;
+	private final Map<String, Document> m_docs = new HashMap<String, Document>();
 
 	@Inject
 	public Cabinet(@Named("cabinet") File baseDir) {
@@ -104,14 +106,22 @@ public class Cabinet {
 		}
 	}
 
-	public Collection<Document> getDocuments() throws IOException {
-		List<Document> docs = new ArrayList<Document>();
-		findDocuments(m_baseDir, docs);
-		LOG.info("Loaded {} documents", docs.size());
-		return docs;
+	public synchronized Collection<Document> getDocuments() throws IOException {
+		if (m_docs.isEmpty()) {
+			findDocuments(m_baseDir, m_docs);
+			LOG.info("Loaded {} documents", m_docs.size());
+		}
+		return Collections.unmodifiableCollection(m_docs.values());
 	}
 
-	private void findDocuments(File dir, Collection<Document> docs)
+	public synchronized void refreshDocuments() throws IOException {
+		LOG.info("Clearing {} docs and refreshing", m_docs.size());
+		m_docs.clear();
+		findDocuments(m_baseDir, m_docs);
+		LOG.info("Loaded {} documents", m_docs.size());
+	}
+
+	private void findDocuments(File dir, Map<String, Document> docs)
 			throws IOException {
 		for (File entry : dir.listFiles()) {
 			if (entry.isFile()) {
@@ -119,7 +129,7 @@ public class Cabinet {
 				if (filename.endsWith("." + Document.EXT_RAW)) {
 					Document doc = new PdfDocument(dir, filename.substring(0,
 							filename.length() - 4));
-					docs.add(doc);
+					docs.put(doc.getId(), doc);
 				}
 			} else if (entry.isDirectory()) {
 				findDocuments(entry, docs);

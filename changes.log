@@ -1,5 +1,8 @@
 # To do
 * Support large scanned jpgs/pngs instead of just pdfs
+* Can get into state where raw file is open, but trying to import that file, so can't copy over, and it just keeps failing and imports then stop
+* Some css/js resources are still referenced from the web. Must be copied into jar
+* Date range filter should auto-activate if a new date is chosen
 
 # Finished but not released
 * Open localhost in browser when jar is run
