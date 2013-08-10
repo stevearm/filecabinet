@@ -55,6 +55,16 @@
 			<artifactId>guava</artifactId>
 			<version>14.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.2.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
 
 		<!-- Guice -->
 		<dependency>
@@ -135,7 +145,7 @@
 			<url>http://horsefire.s3.amazonaws.com/maven</url>
 		</repository>
 	</repositories>
-	
+
 	<licenses>
 		<license>
 			<name>Apache 2</name>
