@@ -98,7 +98,9 @@ public class ImportToCouch {
 		object.put("effective", convert(doc.getEffective()));
 		object.put("filename", doc.getFilename());
 		object.put("sha1", doc.getId());
-		object.put("thumbnail", "thumb.pdf_view");
+		JSONObject thumb = new JSONObject();
+		object.put("thumbnail", thumb);
+		thumb.put("name", "thumb.pdf_view");
 
 		// Prepare tags
 		JSONArray tags = new JSONArray();
