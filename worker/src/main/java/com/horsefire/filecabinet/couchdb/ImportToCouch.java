@@ -96,6 +96,7 @@ public class ImportToCouch {
 		JSONObject object = new JSONObject();
 		object.put("uploaded", convert(doc.getUploaded()));
 		object.put("effective", convert(doc.getEffective()));
+		object.put("type", "document");
 		object.put("filename", doc.getFilename());
 		object.put("sha1", doc.getId());
 		JSONObject thumb = new JSONObject();
