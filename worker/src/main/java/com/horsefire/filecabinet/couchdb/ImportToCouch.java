@@ -97,9 +97,6 @@ public class ImportToCouch {
 		object.put("uploaded", convert(doc.getUploaded()));
 		object.put("effective", convert(doc.getEffective()));
 		object.put("filename", doc.getFilename());
-		object.put("sha1", doc.getId());
-		object.put("type", "document");
-		object.put("unseen", Boolean.TRUE);
 
 		// Prepare tags
 		JSONArray tags = new JSONArray();

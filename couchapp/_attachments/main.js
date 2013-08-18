@@ -27,13 +27,13 @@ var extractDateArray = function(dateString) {
 
 var renderDoc = function(doc) {
 	var render = {
-		clickListener : function(id){
+		clickListener : function(doc){
 			return function(event) {
 				if (!$(event.target).is("a")) {
-					openDoc(id);
+					openDoc(doc);
 				}
 			}
-		}(doc._id),
+		}(doc),
 		html : ""
 	};
 	render.html = '<div class="doc">';
@@ -177,89 +177,82 @@ var showNewDocs = function(newFiles) {
 	}
 };
 
-var openDoc = function(id) {
-	$.ajax({
-		url : "../../"+id,
-		dataType : "json",
-		success : function(doc) {
-			var lightNode = $('#light');
-			lightNode.empty();
+var openDoc = function(doc) {
+	var lightNode = $('#light');
+	lightNode.empty();
 
-			var html = '<div id="full-image-viewport">';
-			if (doc._attachments && doc._attachments["thumbnail"]) {
-				html += '<img id="full-image" src="../../'+id+'/thumbnail"/>';
-			} else {
-				html += '<button onclick="generateThumb(\''+id+'\');">Generate</button>'
+	var html = '<div id="full-image-viewport">';
+	if (doc._attachments && doc._attachments["thumbnail"]) {
+		html += '<img id="full-image" src="../../'+doc._id+'/thumbnail"/>';
+	} else {
+		html += '<button onclick="generateThumb(\''+doc._id+'\');">Generate</button>'
+	}
+
+	html += '</div>';
+	html += '<div><a href="../../'+doc._id+'/raw" target="_blank">Download file</a></div>';
+	html += '<div><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
+	html += '<div><span class="key">Uploaded</span><span class="value">'+renderDateArray(doc.uploaded)+'</span></div>';
+	html += '<div><span class="key">Effective</span><span class="value"><input type="text" id="effective-date" size="20" value="'+renderDateArray(doc.effective)+'"/></span></div>';
+	if (doc.unseen) {
+		html += '<div id="unseen"><span class="key">Unseen</span><span class="value"><button>Mark as seen</button></span></div>';
+	}
+	html += '<input name="tags" id="tags" style="position:relative" value="'+doc.tags.join(',')+'"/>';
+	lightNode.append(html);
+
+	if (doc.thumb) {
+		$('#full-image').draggable({
+			drag: function(event, ui) {
+				if(ui.position.top>0) { ui.position.top = 0; }
+				var maxtop = ui.helper.parent().height()-ui.helper.height();
+				if(ui.position.top<maxtop) { ui.position.top = maxtop; }
+				if(ui.position.left>0) { ui.position.left = 0; }
+				var maxleft = ui.helper.parent().width()-ui.helper.width();
+				if(ui.position.left<maxleft) { ui.position.left = maxleft; }
 			}
-			
-			html += '</div>';
-			html += '<div><a href="../../'+id+'/raw" target="_blank">Download file</a></div>';
-			html += '<div><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
-			html += '<div><span class="key">Uploaded</span><span class="value">'+renderDateArray(doc.uploaded)+'</span></div>';
-			html += '<div><span class="key">Effective</span><span class="value"><input type="text" id="effective-date" size="20" value="'+renderDateArray(doc.effective)+'"/></span></div>';
-			if (doc.unseen) {
-				html += '<div id="unseen"><span class="key">Unseen</span><span class="value"><button>Mark as seen</button></span></div>';
-			}
-			html += '<input name="tags" id="tags" style="position:relative" value="'+doc.tags.join(',')+'"/>';
-			lightNode.append(html);
+		});
+	}
 
-			if (doc.thumb) {
-				$('#full-image').draggable({
-					drag: function(event, ui) {
-						if(ui.position.top>0) { ui.position.top = 0; }
-						var maxtop = ui.helper.parent().height()-ui.helper.height();
-						if(ui.position.top<maxtop) { ui.position.top = maxtop; }
-						if(ui.position.left>0) { ui.position.left = 0; }
-						var maxleft = ui.helper.parent().width()-ui.helper.width();
-						if(ui.position.left<maxleft) { ui.position.left = maxleft; }
-					}
-				});
-			}
-
-			var effectiveDate = $('#effective-date');
-			effectiveDate.datepicker({
-				dateFormat: "yy-mm-dd"
-			});
-			effectiveDate.change(function(){
-				doc.effective = extractDateArray(effectiveDate.val());
-				saveDoc(doc);
-			});
-
-			$('#unseen > span.value > button').click(function(){
-				doc.unseen = false;
-				saveDoc(doc);
-				$('#unseen').remove();
-			});
-
-			var tagsInput = $('#tags');
-			tagsInput.tagit({
-				autocomplete: {
-					source: function(request, callback) {
-						var suggestions = [];
-						for (var tag in tags) {
-							if (tag.indexOf(request.term) != -1) {
-								suggestions.push(tag);
-							}
-						}
-						callback(suggestions);
-					}
-				}
-			});
-			tagsInput.change(function(){
-				doc.tags = tagsInput.val().split(',');
-				saveDoc(doc);
-				for (var i = 0; i < doc.tags.length; i++) {
-					if (!tags.hasOwnProperty(doc.tags[i])) {
-						tags[doc.tags[i]] = false;
-					}
-				}
-			});
-
-			lightNode.show();
-			$('#fade').show();
-		},
-		error : genericAjaxError
+	var effectiveDate = $('#effective-date');
+	effectiveDate.datepicker({
+		dateFormat: "yy-mm-dd"
 	});
+	effectiveDate.change(function(){
+		doc.effective = extractDateArray(effectiveDate.val());
+		saveDoc(doc);
+	});
+
+	$('#unseen > span.value > button').click(function(){
+		doc.unseen = false;
+		saveDoc(doc);
+		$('#unseen').remove();
+	});
+
+	var tagsInput = $('#tags');
+	tagsInput.tagit({
+		autocomplete: {
+			source: function(request, callback) {
+				var suggestions = [];
+				for (var tag in tags) {
+					if (tag.indexOf(request.term) != -1) {
+						suggestions.push(tag);
+					}
+				}
+				callback(suggestions);
+			}
+		}
+	});
+	tagsInput.change(function(){
+		doc.tags = tagsInput.val().split(',');
+		saveDoc(doc);
+		for (var i = 0; i < doc.tags.length; i++) {
+			if (!tags.hasOwnProperty(doc.tags[i])) {
+				tags[doc.tags[i]] = false;
+			}
+		}
+	});
+
+	lightNode.show();
+	$('#fade').show();
 };
 
 var closeDoc = function() {
@@ -269,18 +262,15 @@ var closeDoc = function() {
 
 var saveDoc = function(doc) {
 	$.ajax({
-		type:"POST",
-		traditional:true,
-		url:"/cabinet",
-		data:{
-			id:doc.id,
-			action:"saveDoc",
-			unseen:doc.unseen,
-			tags:doc.tags,
-			effective:doc.effective
-		},
-		success:function(){
-			redraw();
+		type:"PUT",
+		url:"../../"+doc._id,
+		data: JSON.stringify(doc),
+		contentType: "application/json; charset=utf-8",
+		success:function(json){
+			if (json.ok) {
+				doc._rev = json.rev;
+				redraw();
+			} else { genericAjaxError(null, null); }
 		},
 		error : genericAjaxError,
 		dataType:"json"

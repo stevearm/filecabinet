@@ -51,6 +51,16 @@
 			<version>1.0.5</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>1.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.4.3</version>
+		</dependency>
+		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>14.0.1</version>
@@ -74,7 +84,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-servlet</artifactId>
+			<artifactId>guice-assistedinject</artifactId>
 			<version>${guice.version}</version>
 		</dependency>
 

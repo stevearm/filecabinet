@@ -1,8 +1,29 @@
 # File Cabinet
 
-This jar starts a webserver to allow for an easy interface. Any files in ./incoming will be hashed, thumbnailed, and filed in ./files. The web ui will show all files, allow for tagging and setting a date, marks new files as unseen until someone sets otherwise, and allows for exporting files again.
+This is a vault app to organize documents. The web ui allows viewing, tagging, uploading, and deleting of documents. The worker jar will allow bulk upload, and do thumbnailing for all documents missing a thumbnail. It will also create downloadable archives if they are desired.
 
-This was developed mostly so I could keep track of large collections of bills, documents, bank statements, taxes, etc while still keeping everything on a simple directory (or backed-up folder like Cloudstation or Dropbox).
+## Worker
+1. Start up (given couch host and db name)
+1. Get the server's worker_queue view. For each document listed:
+  1. download json
+  1. If it has no RAW, fail out
+  1. If it has no SHA1, download the raw and compute it
+  1. If it's missing a thumbnail but has a RAW file, create thumb
+  1. If it's missing a SHA1 but has a RAW file, create SHA1
+  1. Mark as unseen
+  1. Save
+1. Get worker status doc (contains import dir and archive requests)
+1. Check import directory. For each file found:
+  1. SHA1 file
+  1. Look for SHA1 collisions, if exist, mark collision as unseen, and throw away local file
+  1. Create json with sha1
+  1. Attach raw file
+  1. Create thumbnail and attach to document
+  1. Delete local file
+1. Check archive requests. For each one found:
+  1. Create archive file
+  1. Attach archive file to archive request
+1. Exit
 
 ## Licences
 File Cabinet is licenced under [Apache Licence 2.0][apache20]. It contains libraries licenced under:
