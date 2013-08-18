@@ -1,6 +1,15 @@
 function(doc) {
 	if (doc.type != "document") { return; }
-	if (!("sha1" in doc) || !("thumbnail" in doc)) {
-		emit(null, 1);
+
+	var needed = false;
+	if (!("sha1" in doc)) {
+		needed = true;
 	}
+	if (!("thumbnail" in doc)
+		|| ( !("name" in doc.thumbnail) && !doc.thumbnail.disabled)
+		) {
+		needed = true;
+	}
+
+	if (needed) { emit(null, 1); }
 }
