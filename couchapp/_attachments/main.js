@@ -38,7 +38,7 @@ var renderDoc = function(doc) {
 	};
 	render.html = '<div class="doc">';
 	render.html +=  '<div class="thumb">';
-	render.html +=  (doc._attachments && doc._attachments["thumbnail"]) ? '<img src="../../'+doc._id+'/thumbnail"/>' : 'No thumb';
+	render.html +=  (doc.thumbnail && doc.thumbnail.name) ? '<img src="../../'+doc._id+'/'+doc.thumbnail.name+'"/>' : 'No thumb';
 	render.html +=    '<br><a href="../../'+doc._id+'/raw" target="_blank">Download</a>';
 	render.html +=  '</div>';
 	render.html +=  '<div class="filename"><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
@@ -182,8 +182,8 @@ var openDoc = function(doc) {
 	lightNode.empty();
 
 	var html = '<div id="full-image-viewport">';
-	if (doc._attachments && doc._attachments["thumbnail"]) {
-		html += '<img id="full-image" src="../../'+doc._id+'/thumbnail"/>';
+	if (doc.thumbnail && doc.thumbnail.name) {
+		html += '<img id="full-image" src="../../'+doc._id+'/'+doc.thumbnail.name+'"/>';
 	} else {
 		html += '<button onclick="generateThumb(\''+doc._id+'\');">Generate</button>'
 	}
