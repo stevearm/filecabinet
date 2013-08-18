@@ -3,15 +3,10 @@ package com.horsefire.filecabinet;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
-import com.google.inject.servlet.ServletModule;
-import com.horsefire.filecabinet.web.ArchiveServlet;
-import com.horsefire.filecabinet.web.CabinetServlet;
-import com.horsefire.filecabinet.web.EmbeddedFileServlet;
-import com.horsefire.filecabinet.web.FetchServlet;
-import com.horsefire.filecabinet.web.ShutdownServlet;
 
-public class FcModule extends ServletModule {
+public class FcModule extends AbstractModule {
 
 	private final Options m_options;
 
@@ -20,7 +15,7 @@ public class FcModule extends ServletModule {
 	}
 
 	@Override
-	protected void configureServlets() {
+	protected void configure() {
 		bind(Options.class).toInstance(m_options);
 
 		File cabinet = new File("files");
@@ -39,11 +34,5 @@ public class FcModule extends ServletModule {
 		bind(AtomicBoolean.class)
 				.annotatedWith(Names.named("shutdown-monitor")).toInstance(
 						new AtomicBoolean(false));
-
-		serve("/shutdown").with(ShutdownServlet.class);
-		serve("/cabinet").with(CabinetServlet.class);
-		serve("/fetch").with(FetchServlet.class);
-		serve("/archive").with(ArchiveServlet.class);
-		serve("/").with(EmbeddedFileServlet.class);
 	}
 }

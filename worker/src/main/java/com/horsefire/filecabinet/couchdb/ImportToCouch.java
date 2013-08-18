@@ -98,6 +98,7 @@ public class ImportToCouch {
 		object.put("effective", convert(doc.getEffective()));
 		object.put("filename", doc.getFilename());
 		object.put("sha1", doc.getId());
+		object.put("thumbnail", "thumb.pdf_view");
 
 		// Prepare tags
 		JSONArray tags = new JSONArray();
@@ -120,7 +121,7 @@ public class ImportToCouch {
 
 		// Add thumbnail
 		if (doc.getThumbnailFile().isFile()) {
-			put = new HttpPut(url + "/thumbnail?rev=" + result.get("rev"));
+			put = new HttpPut(url + "/thumb.pdf_view?rev=" + result.get("rev"));
 			put.setEntity(new FileEntity(doc.getThumbnailFile(), ContentType
 					.create("image/png")));
 			result = doPut(put);
