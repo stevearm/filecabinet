@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.joda.time.DateTime;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 @SuppressWarnings("unchecked")
 public class Document extends com.horsefire.couchdb.Document {
@@ -42,11 +43,15 @@ public class Document extends com.horsefire.couchdb.Document {
 	}
 
 	public boolean hasFailedThumb(String thumbName) {
-		JSONArray failedThumbs = (JSONArray) m_json.get("failedThumbnails");
-		if (failedThumbs != null) {
-			for (Object failedThumb : failedThumbs) {
-				if (failedThumb.toString().equals(thumbName)) {
-					return true;
+		JSONObject thumb = (JSONObject) m_json.get("thumbnail");
+		if (thumb != null) {
+			JSONArray failedGenerations = (JSONArray) thumb
+					.get("failedGenerations");
+			if (failedGenerations != null) {
+				for (Object failedName : failedGenerations) {
+					if (failedName.toString().equals(thumbName)) {
+						return true;
+					}
 				}
 			}
 		}
@@ -54,16 +59,22 @@ public class Document extends com.horsefire.couchdb.Document {
 	}
 
 	public void setFailedThumb(String thumbName) {
-		JSONArray failedThumbs = (JSONArray) m_json.get("failedThumbnails");
-		if (failedThumbs == null) {
-			failedThumbs = new JSONArray();
-			m_json.put("failedThumbnails", failedThumbs);
+		JSONObject thumb = (JSONObject) m_json.get("thumbnail");
+		if (thumb == null) {
+			thumb = new JSONObject();
+			m_json.put("thumbnail", thumb);
 		}
-		for (Object failedThumb : failedThumbs) {
+		JSONArray failedGenerations = (JSONArray) thumb
+				.get("failedGenerations");
+		if (failedGenerations == null) {
+			failedGenerations = new JSONArray();
+			thumb.put("failedGenerations", failedGenerations);
+		}
+		for (Object failedThumb : failedGenerations) {
 			if (failedThumb.toString().equals(thumbName)) {
 				return;
 			}
 		}
-		failedThumbs.add(thumbName);
+		failedGenerations.add(thumbName);
 	}
 }
