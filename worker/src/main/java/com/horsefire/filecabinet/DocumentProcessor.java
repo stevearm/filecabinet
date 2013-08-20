@@ -73,6 +73,9 @@ public class DocumentProcessor {
 	}
 
 	private void ensureThumbs() throws IOException, ParseException {
+		if (m_doc.isThumbDisabled()) {
+			return;
+		}
 		String contentType = m_doc.getContentType("raw");
 		for (Thumbnailer thumbnailer : m_thumbnailers.getThumbnailers(MimeType
 				.get(contentType))) {

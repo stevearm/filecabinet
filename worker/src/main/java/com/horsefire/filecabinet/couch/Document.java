@@ -42,6 +42,15 @@ public class Document extends com.horsefire.couchdb.Document {
 		m_json.put("sha1", sha1);
 	}
 
+	public boolean isThumbDisabled() {
+		JSONObject thumb = (JSONObject) m_json.get("thumbnail");
+		if (thumb != null) {
+			Boolean disabled = (Boolean) thumb.get("disabled");
+			return disabled != null && disabled.booleanValue();
+		}
+		return false;
+	}
+
 	public boolean hasFailedThumb(String thumbName) {
 		JSONObject thumb = (JSONObject) m_json.get("thumbnail");
 		if (thumb != null) {
