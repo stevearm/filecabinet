@@ -55,7 +55,7 @@ public class Document extends com.horsefire.couchdb.Document {
 		JSONObject thumb = (JSONObject) m_json.get("thumbnail");
 		if (thumb != null) {
 			JSONArray failedGenerations = (JSONArray) thumb
-					.get("failedGenerations");
+					.get("failed_generations");
 			if (failedGenerations != null) {
 				for (Object failedName : failedGenerations) {
 					if (failedName.toString().equals(thumbName)) {
@@ -74,10 +74,10 @@ public class Document extends com.horsefire.couchdb.Document {
 			m_json.put("thumbnail", thumb);
 		}
 		JSONArray failedGenerations = (JSONArray) thumb
-				.get("failedGenerations");
+				.get("failed_generations");
 		if (failedGenerations == null) {
 			failedGenerations = new JSONArray();
-			thumb.put("failedGenerations", failedGenerations);
+			thumb.put("failed_generations", failedGenerations);
 		}
 		for (Object failedThumb : failedGenerations) {
 			if (failedThumb.toString().equals(thumbName)) {
