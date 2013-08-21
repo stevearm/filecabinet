@@ -25,6 +25,15 @@ var extractDateArray = function(dateString) {
 	return [ parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]) ];
 };
 
+var fixUpSparseDoc = function(doc) {
+	if (!('effective' in doc)) {
+		doc.effective = extractDateArray(renderDate(new Date()));
+	}
+	if (!('tags' in doc)) {
+		doc.tags = [];
+	}
+};
+
 var renderDoc = function(doc) {
 	var render = {
 		clickListener : function(doc){
@@ -97,7 +106,9 @@ var redraw = function() {
 		success:function(json){
 			var docsToDisplay = {};
 			for (var i = 0; i < json.rows.length; i++) {
-				docsToDisplay[json.rows[i].id] = json.rows[i].doc;
+				var doc = json.rows[i].doc;
+				fixUpSparseDoc(doc);
+				docsToDisplay[json.rows[i].id] = doc;
 			}
 			showNormalDocs(docsToDisplay);
 		},
@@ -111,7 +122,9 @@ var redraw = function() {
 		success : function(json) {
 			var docs = [];
 			for (var i = 0; i < json.rows.length; i++) {
-				docs.push(json.rows[i].doc);
+				var doc = json.rows[i].doc;
+				fixUpSparseDoc(doc);
+				docs.push(doc);
 			}
 			showNewDocs(docs);
 		},

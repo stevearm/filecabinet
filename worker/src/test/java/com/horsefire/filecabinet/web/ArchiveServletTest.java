@@ -17,7 +17,7 @@ import com.horsefire.filecabinet.file.Document;
 public class ArchiveServletTest extends TestCase {
 
 	public void testCreateFilename() {
-		Document doc = createMock(Document.class);
+		FcDocument doc = createMock(FcDocument.class);
 		expect(doc.getEffective()).andStubReturn(
 				new DateTime(2013, 5, 14, 0, 0));
 		expect(doc.getTags()).andStubReturn(

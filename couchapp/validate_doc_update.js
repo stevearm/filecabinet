@@ -17,10 +17,18 @@ function(newDoc, oldDoc, userCtx) {
 			if (!oldDoc && !newDoc.unseen) {
 				fail("All new documents must be unseen");
 			}
+			if (!("uploaded" in newDoc)) {
+				fail("All documents must have an upload time");
+			}
 			assertDate("uploaded", newDoc);
 			assertDate("effective", newDoc);
 			if ( ("tags" in newDoc) && !Array.isArray(newDoc.tags)) {
 				fail("tags must be an array");
+			}
+			break;
+		case "prefs":
+			if (newDoc._id != "prefs") {
+				fail("Only one prefs should exist, and it should be id=prefs");
 			}
 			break;
 		default:

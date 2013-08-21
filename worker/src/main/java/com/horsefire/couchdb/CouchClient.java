@@ -33,18 +33,24 @@ public class CouchClient {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(CouchClient.class);
 
-	private final String m_baseUrl;
+	private final String m_host;
+	private final String m_db;
 	private final JSONParser m_parser;
 
 	@Inject
 	public CouchClient(@Named("db-host") String host,
 			@Named("db-name") String db, JSONParser parser) {
-		m_baseUrl = "http://" + host + "/" + db;
+		m_host = host;
+		m_db = db;
 		m_parser = parser;
 	}
 
+	private String baseUrl() {
+		return "http://" + m_host + "/" + m_db;
+	}
+
 	private HttpResponse get(String url) throws IOException, ParseException {
-		HttpGet get = new HttpGet(m_baseUrl + url);
+		HttpGet get = new HttpGet(url);
 		HttpResponse result = new DefaultHttpClient().execute(get);
 		if (result.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
 			return result;
@@ -78,15 +84,15 @@ public class CouchClient {
 	}
 
 	public JSONObject getView(String view) throws IOException, ParseException {
-		return getObject("/_design/ui/_view/" + view);
+		return getObject(baseUrl() + "/_design/ui/_view/" + view);
 	}
 
 	public Document getDocument(String id) throws IOException, ParseException {
-		return new Document(getObject("/" + id));
+		return new Document(getObject(baseUrl() + "/" + id));
 	}
 
 	private String getUuid() throws IOException, ParseException {
-		JSONObject json = getObject("/_uuids");
+		JSONObject json = getObject("http://" + m_host + "/_uuids");
 		JSONArray uuids = (JSONArray) ((JSONObject) json).get("uuids");
 		return uuids.get(0).toString();
 	}
@@ -97,7 +103,7 @@ public class CouchClient {
 			id = getUuid();
 		}
 
-		HttpPut put = new HttpPut(m_baseUrl + "/" + id);
+		HttpPut put = new HttpPut(baseUrl() + "/" + id);
 		put.setEntity(new StringEntity(doc.getJsonObject().toJSONString(),
 				ContentType.APPLICATION_JSON));
 		JSONObject result = doPut(put);
@@ -106,12 +112,16 @@ public class CouchClient {
 			throw new IOException("Failed to save doc: "
 					+ result.toJSONString());
 		}
+		if (doc.getId() == null) {
+			doc.getJsonObject().put("_id", id);
+		}
 		doc.setRev(result.get("rev").toString());
 	}
 
 	public Attachment getAttachment(Document doc, String attachmentName)
 			throws IOException, ParseException {
-		HttpResponse response = get("/" + doc.getId() + "/" + attachmentName);
+		HttpResponse response = get(baseUrl() + "/" + doc.getId() + "/"
+				+ attachmentName);
 		String contentType = response.getHeaders("Content-Type")[0].getValue();
 		MimeType mimeType = MimeType.get(contentType);
 		InputStream in = response.getEntity().getContent();
@@ -127,7 +137,7 @@ public class CouchClient {
 
 	public void putAttachment(Document doc, String name, Attachment attachment)
 			throws IOException, IllegalStateException, ParseException {
-		HttpPut put = new HttpPut(m_baseUrl + "/" + doc.getId() + "/" + name
+		HttpPut put = new HttpPut(baseUrl() + "/" + doc.getId() + "/" + name
 				+ "?rev=" + doc.getRev());
 		put.setEntity(new ByteArrayEntity(attachment.content, ContentType
 				.create(attachment.type.toString())));

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.horsefire.couchdb.CouchClient;
 import com.horsefire.filecabinet.DocumentProcessor.Factory;
-import com.horsefire.filecabinet.couch.Document;
+import com.horsefire.filecabinet.couch.FcDocument;
 
 public class QueueProcessor {
 
@@ -35,7 +35,7 @@ public class QueueProcessor {
 		for (Object row : rows) {
 			String id = ((JSONObject) row).get("id").toString();
 			LOG.info("Processing id {}", id);
-			Document doc = new Document(m_client.getDocument(id));
+			FcDocument doc = new FcDocument(m_client.getDocument(id));
 			m_docProcessorFactory.create(doc).process();
 		}
 	}

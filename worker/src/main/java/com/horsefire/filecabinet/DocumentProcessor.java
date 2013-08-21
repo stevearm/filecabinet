@@ -10,14 +10,14 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.horsefire.couchdb.CouchClient;
 import com.horsefire.filecabinet.couch.Attachment;
-import com.horsefire.filecabinet.couch.Document;
+import com.horsefire.filecabinet.couch.FcDocument;
 import com.horsefire.filecabinet.thumb.Thumbnailer;
 import com.horsefire.filecabinet.thumb.ThumbnailerRegistry;
 
 public class DocumentProcessor {
 
 	public static interface Factory {
-		DocumentProcessor create(Document doc);
+		DocumentProcessor create(FcDocument doc);
 	}
 
 	private static final Logger LOG = LoggerFactory
@@ -25,13 +25,13 @@ public class DocumentProcessor {
 
 	private final CouchClient m_client;
 	private final ThumbnailerRegistry m_thumbnailers;
-	private final Document m_doc;
+	private final FcDocument m_doc;
 	private Attachment m_rawFile = null;
 	private boolean m_modified = false;
 
 	@Inject
 	public DocumentProcessor(CouchClient client,
-			ThumbnailerRegistry thumbnailers, @Assisted Document doc) {
+			ThumbnailerRegistry thumbnailers, @Assisted FcDocument doc) {
 		m_client = client;
 		m_thumbnailers = thumbnailers;
 		m_doc = doc;

@@ -8,14 +8,17 @@ import com.google.inject.Inject;
 public class FileCabinet {
 
 	private final QueueProcessor m_queueProcessor;
+	private final Importer m_importer;
 
 	@Inject
-	public FileCabinet(QueueProcessor queueProcessor) {
+	public FileCabinet(Importer importer, QueueProcessor queueProcessor) {
+		m_importer = importer;
 		m_queueProcessor = queueProcessor;
 	}
 
 	public void run() throws Exception {
-		m_queueProcessor.run();
+		m_importer.run();
+		// m_queueProcessor.run();
 	}
 
 	public static void main(String[] args) throws Exception {

@@ -6,11 +6,20 @@ import org.joda.time.DateTime;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-@SuppressWarnings("unchecked")
-public class Document extends com.horsefire.couchdb.Document {
+import com.horsefire.couchdb.Document;
 
-	public Document(com.horsefire.couchdb.Document doc) {
+@SuppressWarnings("unchecked")
+public class FcDocument extends com.horsefire.couchdb.Document {
+
+	public FcDocument(Document doc) {
 		super(doc.getJsonObject());
+	}
+
+	public FcDocument() {
+		super(new JSONObject());
+		final JSONObject json = getJsonObject();
+		json.put("type", "document");
+		json.put("unseen", Boolean.TRUE);
 	}
 
 	public void setFilename(String filename) {
