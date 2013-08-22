@@ -85,6 +85,9 @@ public class DocumentProcessor {
 				continue;
 			}
 
+			LOG.info("Running {} through thumbnailer {}", m_doc.getId(),
+					thumbnailer.suggestedName());
+
 			try {
 				byte[] thumbnail = thumbnailer
 						.createThumbnail(getFile().content);

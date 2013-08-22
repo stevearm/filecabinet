@@ -48,7 +48,12 @@ public class PdfBoxThumbnailer implements Thumbnailer {
 			}
 
 			fileRead = new FileInputStream(tmp);
-			return ByteStreams.toByteArray(fileRead);
+			byte[] byteArray = ByteStreams.toByteArray(fileRead);
+			if (byteArray.length == 0) {
+				throw new IOException("Thumbnail file " + tmp.getName()
+						+ " is empty");
+			}
+			return byteArray;
 		} finally {
 			if (fileRead != null) {
 				fileRead.close();

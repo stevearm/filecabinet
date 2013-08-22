@@ -18,7 +18,7 @@ public class FileCabinet {
 
 	public void run() throws Exception {
 		m_importer.run();
-		// m_queueProcessor.run();
+		m_queueProcessor.run();
 	}
 
 	public static void main(String[] args) throws Exception {
