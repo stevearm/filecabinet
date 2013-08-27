@@ -1,0 +1,161 @@
+<html>
+	<head>
+		<title>File Cabinet</title>
+		<link rel="stylesheet" type="text/css" href="jquery-ui-1.flick.css"/>
+		<link rel="stylesheet" type="text/css" href="jquery.tagit.css"/>
+		<link rel="stylesheet" type="text/css" href="style/main.css"/>
+		<style type="text/css">
+#properties {
+	width: 400px;
+	display: inline-block;
+	vertical-align: top;
+}
+#thumbnail {
+	width: 200px;
+	display: inline-block;
+}
+#full-image-viewport {
+	height: 400px;
+	width: 400px;
+	overflow: hidden;
+	border: solid thin black;
+}
+#full-image {
+	position: relative;
+	cursor: move;
+}
+		</style>
+	</head>
+	<body>
+		<div id="properties">
+			<div>
+				<span class="key">Filename</span>
+				<span id="filename" class="value"></span>
+			</div>
+			<div>
+				<span class="key">Uploaded</span>
+				<span id="uploaded" class="value"></span>
+			</div>
+			<div>
+				<span class="key">Effective</span>
+				<span class="value"><input type="text" id="effective-date" size="20"/></span>
+			</div>
+			<input name="tags" id="tags" style="position:relative" value=""/>
+			<div><a id="download" href="" target="_blank">Download file</a></div>
+		</div>
+		<div id="thumbnail">
+			<div id="full-image-viewport">
+				<img id="full-image" src=""/>
+			</div>
+		</div>
+		<script type="text/javascript">
+var tags = [];
+var doc = null;
+
+var bootstrap = function() {
+	db.view("ui/tags", {
+		group: true,
+		success: function(data) {
+			tags = [];
+			for (var i = 0; i < data.rows.length; i++) {
+				if (data.rows[i].key && data.rows[i].key.trim().length > 0) {
+					tags.push(data.rows[i].key.trim());
+				}
+			}
+		}
+	});
+
+	var docId = window.location.hash.substr(1);
+	db.openDoc(docId, {
+		success:function(data){
+			doc = data;
+			$('#filename').html(doc.filename);
+			$('#uploaded').html(dateArrayToString(doc.uploaded));
+			
+			var effectiveDate = $('#effective-date');
+			effectiveDate.val(dateArrayToString(doc.effective));
+			effectiveDate.datepicker({
+				dateFormat: "yy-mm-dd"
+			});
+			effectiveDate.change(function(){
+				doc.effective = dateStringToArray(effectiveDate.val());
+				save();
+			});
+			
+			$('#download').attr('href', db.uri + doc._id + '/raw');
+			
+			var tagsInput = $('#tags');
+			tagsInput.val(doc.tags.join(','));
+			tagsInput.tagit({
+				autocomplete: {
+					source: function(request, callback) {
+						console.log("Triggering", request);
+						var suggestions = [];
+						for (var i = 0; i < tags.length; i++) {
+							if (tags[i].indexOf(request.term) != -1) {
+								suggestions.push(tags[i]);
+							}
+						}
+						callback(suggestions);
+					}
+				}
+			});
+			tagsInput.change(function(){
+				doc.tags = tagsInput.val().split(',');
+				save();
+			});
+			
+			if (doc.thumbnail && doc.thumbnail.name) {
+				showThumb(doc.thumbnail.name);
+			} else {
+				console.log("Should do multiple thumbs");
+			}
+		}
+	});
+};
+
+var showThumb = function(thumbName) {
+	var display = $('#full-image');
+	display.attr('src', db.uri + doc._id + '/' + thumbName);
+	display.draggable({
+		drag: function(event, ui) {
+			if(ui.position.top>0) { ui.position.top = 0; }
+			var maxtop = ui.helper.parent().height()-ui.helper.height();
+			if(ui.position.top<maxtop) { ui.position.top = maxtop; }
+			if(ui.position.left>0) { ui.position.left = 0; }
+			var maxleft = ui.helper.parent().width()-ui.helper.width();
+			if(ui.position.left<maxleft) { ui.position.left = maxleft; }
+		}
+	});
+};
+
+var save = function() {
+	console.log("Should save");
+};
+
+if (false) {
+	if (doc.unseen) {
+		html += '<div id="unseen"><span class="key">Unseen</span><span class="value"><button>Mark as seen</button></span></div>';
+	}
+
+	$('#unseen > span.value > button').click(function(){
+		doc.unseen = false;
+		saveDoc(doc);
+		$('#unseen').remove();
+	});
+}
+</script>
+
+	</body>
+
+	<script src="/_utils/script/json2.js"></script>
+	<script src="/_utils/script/sha1.js"></script>
+	<script src="/_utils/script/base64.js"></script>
+	<script src="/_utils/script/jquery.js"></script>
+	<script src="/_utils/script/jquery.couch.js"></script>
+	<script src="vendor/couchapp/md5.js"></script>
+	<script src="vendor/couchapp/jquery.mustache.js"></script>
+	<script src="jquery-ui-1.10.3.min.js"></script>
+	<script src="tag-it.2.0.js"></script>
+	<script src="script/main.js"></script>
+</html>
