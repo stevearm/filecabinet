@@ -11,7 +11,7 @@
 	vertical-align: top;
 }
 #thumbnail {
-	width: 200px;
+	width: 400px;
 	display: inline-block;
 }
 #full-image-viewport {
@@ -40,10 +40,23 @@
 				<span class="key">Effective</span>
 				<span class="value"><input type="text" id="effective-date" size="20"/></span>
 			</div>
-			<input name="tags" id="tags" style="position:relative" value=""/>
-			<div><a id="download" href="" target="_blank">Download file</a></div>
+			<div>
+				<span class="key">Tags</span>
+				<span class="value"><input name="tags" id="tags" style="position:relative" value=""/></span>
+			</div>
+			<div>
+				<span class="key">Seen</span>
+				<span class="value"><button onclick="doc.unseen = true; save();">Mark unseen</button></span>
+			</div>
+			<div>
+				<span class="key">Original</span>
+				<span class="value"><a id="download" href="" target="_blank">Download</a></span>
+			</div>
 		</div>
 		<div id="thumbnail">
+			<div id="thumb-select" style="display: none">
+				Current: <input type="text" disabled="true" id="thumb-current"/>
+			</div>
 			<div id="full-image-viewport">
 				<img id="full-image" src=""/>
 			</div>
@@ -69,52 +82,108 @@ var bootstrap = function() {
 	db.openDoc(docId, {
 		success:function(data){
 			doc = data;
-			$('#filename').html(doc.filename);
-			$('#uploaded').html(dateArrayToString(doc.uploaded));
-			
-			var effectiveDate = $('#effective-date');
-			effectiveDate.val(dateArrayToString(doc.effective));
-			effectiveDate.datepicker({
-				dateFormat: "yy-mm-dd"
-			});
-			effectiveDate.change(function(){
-				doc.effective = dateStringToArray(effectiveDate.val());
-				save();
-			});
-			
-			$('#download').attr('href', db.uri + doc._id + '/raw');
-			
-			var tagsInput = $('#tags');
-			tagsInput.val(doc.tags.join(','));
-			tagsInput.tagit({
-				autocomplete: {
-					source: function(request, callback) {
-						console.log("Triggering", request);
-						var suggestions = [];
-						for (var i = 0; i < tags.length; i++) {
-							if (tags[i].indexOf(request.term) != -1) {
-								suggestions.push(tags[i]);
-							}
-						}
-						callback(suggestions);
-					}
-				}
-			});
-			tagsInput.change(function(){
-				doc.tags = tagsInput.val().split(',');
-				save();
-			});
-			
-			if (doc.thumbnail && doc.thumbnail.name) {
-				showThumb(doc.thumbnail.name);
-			} else {
-				console.log("Should do multiple thumbs");
-			}
+			showDoc();
+		},
+		error: function(d1, d2, d3) {
+			console.log('Failed to load', d1, d2, d3);
+			alert("Failed to load");
 		}
 	});
 };
 
+var showDoc = function() {
+	doc.unseen = false;
+	$('#filename').html(doc.filename);
+	$('#uploaded').html(dateArrayToString(doc.uploaded));
+	
+	var effectiveDate = $('#effective-date');
+	var effectiveDateString = dateArrayToString(dateObjectToArray(new Date()));
+	if (doc.effective) {
+		effectiveDateString = dateArrayToString(doc.effective);
+	}
+	effectiveDate.val(effectiveDateString);
+	effectiveDate.datepicker({
+		dateFormat: "yy-mm-dd"
+	});
+	effectiveDate.change(function(){
+		doc.effective = dateStringToArray(effectiveDate.val());
+		save();
+	});
+	
+	$('#download').attr('href', db.uri + doc._id + '/raw');
+	
+	var tagsInput = $('#tags');
+	tagsInput.val(doc.tags.join(','));
+	tagsInput.tagit({
+		autocomplete: {
+			source: function(request, callback) {
+				var suggestions = [];
+				for (var i = 0; i < tags.length; i++) {
+					if (tags[i].indexOf(request.term) != -1) {
+						suggestions.push(tags[i]);
+					}
+				}
+				callback(suggestions);
+			}
+		}
+	});
+	tagsInput.change(function(){
+		doc.tags = tagsInput.val().split(',');
+		save();
+	});
+	
+	if (docHelper.hasThumbnail(doc)) {
+		showThumb(doc.thumbnail);
+	} else if (docHelper.needsThumbnail(doc)) {
+		var thumbBar = $('#thumb-select');
+		var thumbNames = getThumbNames();
+		
+		$('<button>Select current</button>').click(function(){
+			var current = $('#thumb-current').val();
+			for (var i = 0; i < thumbNames.length; i++) {
+				if (thumbNames[i] != current) {
+					delete doc._attachments[thumbNames[i]];
+				}
+			}
+			doc.thumbnail = current;
+			save();
+			thumbBar.hide();
+		}).appendTo(thumbBar);
+		
+		$('<button>Disable thumbs</button>').click(function(){
+			doc.thumbnail = false;
+			save();
+			$('#thumbnail').hide();
+		}).appendTo(thumbBar);
+		
+		$('<br/>').appendTo(thumbBar);
+		
+		for (var i = 0; i < thumbNames.length; i++) {
+			var onClick = function(name){
+				return function() { showThumb(name); };
+			}(thumbNames[i]);
+			$('<button>'+thumbNames[i]+'</button>').click(onClick).appendTo(thumbBar);
+		}
+		showThumb(thumbNames[0]);
+		
+		thumbBar.show();
+	} else {
+		$('#thumbnail').hide();
+	}
+};
+
+var getThumbNames = function() {
+	var result = [];
+	for (var key in doc._attachments) {
+		if (key.substr(0,5) == "thumb") {
+			result.push(key);
+		}
+	}
+	return result;
+};
+
 var showThumb = function(thumbName) {
+	$('#thumb-current').val(thumbName);
 	var display = $('#full-image');
 	display.attr('src', db.uri + doc._id + '/' + thumbName);
 	display.draggable({
@@ -130,20 +199,14 @@ var showThumb = function(thumbName) {
 };
 
 var save = function() {
-	console.log("Should save");
-};
-
-if (false) {
-	if (doc.unseen) {
-		html += '<div id="unseen"><span class="key">Unseen</span><span class="value"><button>Mark as seen</button></span></div>';
-	}
-
-	$('#unseen > span.value > button').click(function(){
-		doc.unseen = false;
-		saveDoc(doc);
-		$('#unseen').remove();
+	doc.tags.sort();
+	db.saveDoc(doc, {
+		error: function(d1, d2, d3) {
+			console.log('Failed to save', d1, d2, d3);
+			alert("Failed to save");
+		}
 	});
-}
+};
 </script>
 
 	</body>
@@ -157,5 +220,6 @@ if (false) {
 	<script src="vendor/couchapp/jquery.mustache.js"></script>
 	<script src="jquery-ui-1.10.3.min.js"></script>
 	<script src="tag-it.2.0.js"></script>
+	<script src="script/doc-helper.js"></script>
 	<script src="script/main.js"></script>
 </html>

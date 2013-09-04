@@ -23,3 +23,7 @@ var dateStringToArray = function(dateString) {
 	var parts = dateString.split("-");
 	return [ parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]) ];
 };
+
+var dateObjectToArray = function(date) {
+	return [ 1900 + date.getYear(), date.getMonth() + 1, date.getDate() ];
+};
