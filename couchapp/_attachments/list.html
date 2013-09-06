@@ -260,16 +260,11 @@ var showNormalDocs = function(docs) {
 	allFiles.sort(comparator);
 
 	// Render all files
-	docIdsDisplayed = [];
 	var allFilesNode = $('#files');
 	allFilesNode.empty();
 	for (var i = 0; i < allFiles.length; i++) {
 		var doc = allFiles[i];
-		docIdsDisplayed.push(doc.id);
-		var render = renderDoc(doc);
-		var docElement = $(render.html);
-		docElement.click(render.clickListener);
-		allFilesNode.append(docElement);
+		allFilesNode.append(renderDoc(doc));
 	}
 };
 
