@@ -8,7 +8,7 @@
 	</head>
 	<body>
 		<div style="float: right">
-			<a href="unseen.html">Unseen</a>
+			<a href="index.html">All docs</a>
 		</div>
 		<div id="files"></div>
 
@@ -19,6 +19,9 @@ var bootstrap = function() {
 		success: function(data) {
 			console.log("Got response", data);
 			var filesElement = $('#files');
+			if (data.rows.length == 0) {
+				filesElement.append("No unseen docs");
+			}
 			for (var i = 0; i < data.rows.length; i++) {
 				filesElement.append(renderDoc(data.rows[i].doc));
 			}

@@ -138,41 +138,45 @@ var showDoc = function() {
 	
 	if (docHelper.hasThumbnail(doc)) {
 		showThumb(doc.thumbnail);
-	} else if (docHelper.needsThumbnail(doc)) {
-		var thumbBar = $('#thumb-select');
-		var thumbNames = getThumbNames();
-		
-		$('<button>Select current</button>').click(function(){
-			var current = $('#thumb-current').val();
-			for (var i = 0; i < thumbNames.length; i++) {
-				if (thumbNames[i] != current) {
-					delete doc._attachments[thumbNames[i]];
-				}
-			}
-			doc.thumbnail = current;
-			save();
-			thumbBar.hide();
-		}).appendTo(thumbBar);
-		
-		$('<button>Disable thumbs</button>').click(function(){
-			doc.thumbnail = false;
-			save();
-			$('#thumbnail').hide();
-		}).appendTo(thumbBar);
-		
-		$('<br/>').appendTo(thumbBar);
-		
-		for (var i = 0; i < thumbNames.length; i++) {
-			var onClick = function(name){
-				return function() { showThumb(name); };
-			}(thumbNames[i]);
-			$('<button>'+thumbNames[i]+'</button>').click(onClick).appendTo(thumbBar);
-		}
-		showThumb(thumbNames[0]);
-		
-		thumbBar.show();
-	} else {
+	} else if (docHelper.isThumbnailDisabled(doc)) {
 		$('#thumbnail').hide();
+	} else {
+		var thumbNames = getThumbNames();
+		if (thumbNames.length == 0) {
+			$('#thumbnail').hide();
+		} else {
+			var thumbBar = $('#thumb-select');
+			
+			$('<button>Select current</button>').click(function(){
+				var current = $('#thumb-current').val();
+				for (var i = 0; i < thumbNames.length; i++) {
+					if (thumbNames[i] != current) {
+						delete doc._attachments[thumbNames[i]];
+					}
+				}
+				doc.thumbnail = current;
+				save();
+				thumbBar.hide();
+			}).appendTo(thumbBar);
+			
+			$('<button>Disable thumbs</button>').click(function(){
+				doc.thumbnail = false;
+				save();
+				$('#thumbnail').hide();
+			}).appendTo(thumbBar);
+			
+			$('<br/>').appendTo(thumbBar);
+			
+			for (var i = 0; i < thumbNames.length; i++) {
+				var onClick = function(name){
+					return function() { showThumb(name); };
+				}(thumbNames[i]);
+				$('<button>'+thumbNames[i]+'</button>').click(onClick).appendTo(thumbBar);
+			}
+			showThumb(thumbNames[0]);
+			
+			thumbBar.show();
+		}
 	}
 };
 
