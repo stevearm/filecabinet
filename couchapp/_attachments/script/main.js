@@ -28,10 +28,21 @@ var dateObjectToArray = function(date) {
 	return [ 1900 + date.getYear(), date.getMonth() + 1, date.getDate() ];
 };
 
-var getEffectiveDate = function(doc) {
-	if ('effective' in doc) { return doc.effective; }
-	return dateObjectToArray(new Date());
-}
+var docHelper = {
+	hasThumbnail : function(doc) {
+		return 'thumbnail' in doc && doc.thumbnail !== false;
+	},
+	isThumbnailDisabled : function(doc) {
+		return 'thumbnail' in doc && doc.thumbnail === false;
+	},
+	needsThumbnail : function(doc) {
+		return !('thumbnail' in doc);
+	},
+	getEffectiveDate : function(doc) {
+		if ('effective' in doc) { return doc.effective; }
+		return dateObjectToArray(new Date());
+	}
+};
 
 var renderDoc = function(doc) {
 	var html = '<div class="doc">';
@@ -41,7 +52,7 @@ var renderDoc = function(doc) {
 	html +=  '</div>';
 	html +=  '<div class="filename"><span class="key">Filename</span><span class="value">'+doc.filename+'</span></div>';
 	html +=  '<div><span class="key">Uploaded</span><span class="value">'+dateArrayToString(doc.uploaded)+'</span></div>';
-	html +=  '<div><span class="key">Effective</span><span class="value">'+dateArrayToString(getEffectiveDate(doc))+'</span></div>';
+	html +=  '<div><span class="key">Effective</span><span class="value">'+dateArrayToString(docHelper.getEffectiveDate(doc))+'</span></div>';
 	html +=  '<ul>';
 
 	var tags = ('tags' in doc) ? doc.tags : [];
