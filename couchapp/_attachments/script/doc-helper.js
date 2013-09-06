@@ -6,6 +6,6 @@ var docHelper = {
 		return 'thumbnail' in doc && doc.thumbnail === false;
 	},
 	needsThumbnail : function(doc) {
-		return !('thumbnail' in doc) || doc.thumbnail !== null;
+		return !('thumbnail' in doc);
 	}
 };
