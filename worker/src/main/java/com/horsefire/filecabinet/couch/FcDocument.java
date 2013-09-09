@@ -51,48 +51,16 @@ public class FcDocument extends com.horsefire.couchdb.Document {
 		m_json.put("sha1", sha1);
 	}
 
-	public boolean isThumbDisabled() {
-		JSONObject thumb = (JSONObject) m_json.get("thumbnail");
-		if (thumb != null) {
-			Boolean disabled = (Boolean) thumb.get("disabled");
-			return disabled != null && disabled.booleanValue();
+	public boolean needsThumb() {
+		Object thumb = m_json.get("thumbnail");
+		if (thumb instanceof Boolean) {
+			return ((Boolean) thumb).booleanValue();
 		}
-		return false;
+		return true;
 	}
 
-	public boolean hasFailedThumb(String thumbName) {
-		JSONObject thumb = (JSONObject) m_json.get("thumbnail");
-		if (thumb != null) {
-			JSONArray failedGenerations = (JSONArray) thumb
-					.get("failed_generations");
-			if (failedGenerations != null) {
-				for (Object failedName : failedGenerations) {
-					if (failedName.toString().equals(thumbName)) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-
-	public void setFailedThumb(String thumbName) {
-		JSONObject thumb = (JSONObject) m_json.get("thumbnail");
-		if (thumb == null) {
-			thumb = new JSONObject();
-			m_json.put("thumbnail", thumb);
-		}
-		JSONArray failedGenerations = (JSONArray) thumb
-				.get("failed_generations");
-		if (failedGenerations == null) {
-			failedGenerations = new JSONArray();
-			thumb.put("failed_generations", failedGenerations);
-		}
-		for (Object failedThumb : failedGenerations) {
-			if (failedThumb.toString().equals(thumbName)) {
-				return;
-			}
-		}
-		failedGenerations.add(thumbName);
+	public boolean hasAttachment(String attachmentName) {
+		JSONObject attachments = (JSONObject) m_json.get("_attachments");
+		return attachments != null && attachments.containsKey(attachmentName);
 	}
 }

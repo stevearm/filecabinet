@@ -1,11 +1,13 @@
 package com.horsefire.filecabinet;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.horsefire.couchdb.CouchClient;
@@ -28,6 +30,7 @@ public class DocumentProcessor {
 	private final FcDocument m_doc;
 	private Attachment m_rawFile = null;
 	private boolean m_modified = false;
+	private byte[] m_brokenThumb = null;
 
 	@Inject
 	public DocumentProcessor(CouchClient client,
@@ -73,32 +76,43 @@ public class DocumentProcessor {
 	}
 
 	private void ensureThumbs() throws IOException, ParseException {
-		if (m_doc.isThumbDisabled()) {
+		if (!m_doc.needsThumb()) {
 			return;
 		}
+
 		String contentType = m_doc.getContentType("raw");
 		for (Thumbnailer thumbnailer : m_thumbnailers.getThumbnailers(MimeType
 				.get(contentType))) {
 			final String thumbnailName = "thumb." + thumbnailer.suggestedName();
-			if (m_doc.hasAttachment(thumbnailName)
-					|| m_doc.hasFailedThumb(thumbnailName)) {
+			if (m_doc.hasAttachment(thumbnailName)) {
 				continue;
 			}
 
 			LOG.info("Running {} through thumbnailer {}", m_doc.getId(),
 					thumbnailer.suggestedName());
 
+			byte[] thumbnail = null;
 			try {
-				byte[] thumbnail = thumbnailer
-						.createThumbnail(getFile().content);
-				m_client.putAttachment(m_doc, thumbnailName, new Attachment(
-						thumbnailer.outgoingFormat(), thumbnail));
+				thumbnail = thumbnailer.createThumbnail(getFile().content);
 			} catch (IOException e) {
 				LOG.warn("Error creating thumbnail for {}", m_doc.getId(), e);
-				m_doc.setFailedThumb(thumbnailName);
-				m_modified = true;
+				thumbnail = getBrokenThumb();
 			}
+			LOG.debug("Uploading {} to {}", thumbnailName, m_doc.getId());
+			m_modified = true;
+			m_client.putAttachment(m_doc, thumbnailName, new Attachment(
+					thumbnailer.outgoingFormat(), thumbnail));
 		}
+	}
+
+	private byte[] getBrokenThumb() throws IOException {
+		if (m_brokenThumb == null) {
+			InputStream in = getClass().getClassLoader().getResourceAsStream(
+					"broken.jpg");
+			m_brokenThumb = ByteStreams.toByteArray(in);
+			in.close();
+		}
+		return m_brokenThumb;
 	}
 
 	private void cleanUp() throws IOException, ParseException {
