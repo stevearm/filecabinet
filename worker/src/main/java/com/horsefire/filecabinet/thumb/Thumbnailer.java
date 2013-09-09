@@ -1,12 +1,13 @@
 package com.horsefire.filecabinet.thumb;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import com.horsefire.filecabinet.MimeType;
 
 public interface Thumbnailer {
 
-	MimeType incomingFormat();
+	Collection<MimeType> incomingFormats();
 
 	MimeType outgoingFormat();
 

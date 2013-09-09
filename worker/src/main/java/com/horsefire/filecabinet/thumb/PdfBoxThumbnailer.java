@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collection;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFImageWriter;
@@ -65,8 +67,8 @@ public class PdfBoxThumbnailer implements Thumbnailer {
 		}
 	}
 
-	public MimeType incomingFormat() {
-		return MimeType.PDF;
+	public Collection<MimeType> incomingFormats() {
+		return Arrays.asList(MimeType.PDF);
 	}
 
 	public MimeType outgoingFormat() {

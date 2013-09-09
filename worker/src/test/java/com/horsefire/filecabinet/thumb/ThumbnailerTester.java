@@ -10,19 +10,20 @@ import com.horsefire.filecabinet.MimeType;
 
 public class ThumbnailerTester {
 
+	public static final File DIR = new File("target/thumbnailTest");
+
 	public static void main(String[] args) throws IOException {
 		ThumbnailerRegistry registry = Guice.createInjector().getInstance(
 				ThumbnailerRegistry.class);
 
-		File dir = new File("target/thumbnailTest");
-		if (!dir.isDirectory()) {
-			System.err.println(dir.getAbsolutePath() + " doesn't exist");
+		if (!DIR.isDirectory()) {
+			System.err.println(DIR.getAbsolutePath() + " doesn't exist");
 			return;
 		}
 
-		File[] files = dir.listFiles();
+		File[] files = DIR.listFiles();
 		if (files.length == 0) {
-			System.err.println("No files found in " + dir.getAbsolutePath());
+			System.err.println("No files found in " + DIR.getAbsolutePath());
 			return;
 		}
 

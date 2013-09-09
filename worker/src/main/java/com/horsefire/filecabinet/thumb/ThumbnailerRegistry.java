@@ -16,19 +16,22 @@ public class ThumbnailerRegistry {
 	private Map<MimeType, Collection<Thumbnailer>> m_thumbnailers = new HashMap<MimeType, Collection<Thumbnailer>>();
 
 	@Inject
-	public ThumbnailerRegistry(PdfViewThumbnailer t1, PdfBoxThumbnailer t2) {
+	public ThumbnailerRegistry(PdfViewThumbnailer t1, PdfBoxThumbnailer t2,
+			ImageThumbnailer t3) {
 		add(t1);
 		add(t2);
+		add(t3);
 	}
 
 	private void add(Thumbnailer thumbnailer) {
-		Collection<Thumbnailer> thumbs = m_thumbnailers.get(thumbnailer
-				.incomingFormat());
-		if (thumbs == null) {
-			thumbs = new ArrayList<Thumbnailer>();
-			m_thumbnailers.put(thumbnailer.incomingFormat(), thumbs);
+		for (MimeType mimeType : thumbnailer.incomingFormats()) {
+			Collection<Thumbnailer> thumbs = m_thumbnailers.get(mimeType);
+			if (thumbs == null) {
+				thumbs = new ArrayList<Thumbnailer>();
+				m_thumbnailers.put(mimeType, thumbs);
+			}
+			thumbs.add(thumbnailer);
 		}
-		thumbs.add(thumbnailer);
 	}
 
 	public Collection<Thumbnailer> getThumbnailers(MimeType contentType) {

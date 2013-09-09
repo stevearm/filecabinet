@@ -26,6 +26,8 @@ public final class MimeType {
 	public static final MimeType PDF = get("application/pdf",
 			new String[] { "pdf" });
 	public static final MimeType PNG = get("image/png", new String[] { "png" });
+	public static final MimeType JPG = get("image/jpeg", new String[] { "jpg",
+			"jpeg" });
 
 	public static MimeType get(String contentType) {
 		return get(contentType, null);
