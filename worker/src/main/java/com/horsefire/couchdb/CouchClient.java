@@ -137,16 +137,27 @@ public class CouchClient {
 
 	public void putAttachment(Document doc, String name, Attachment attachment)
 			throws IOException, IllegalStateException, ParseException {
+		if (attachment.content == null || attachment.content.length == 0) {
+			throw new NullPointerException("Cannot upload a null payload");
+		}
 		HttpPut put = new HttpPut(baseUrl() + "/" + doc.getId() + "/" + name
 				+ "?rev=" + doc.getRev());
 		put.setEntity(new ByteArrayEntity(attachment.content, ContentType
 				.create(attachment.type.toString())));
 		JSONObject result = doPut(put);
+		LOG.debug("Uploaded {} to {} and got {}",
+				new Object[] { name, doc.getId(), result });
 		if (result.get("ok") == null
 				|| !((Boolean) result.get("ok")).booleanValue()) {
 			throw new IOException("Failed to save doc: "
 					+ result.toJSONString());
 		}
 		doc.setRev(result.get("rev").toString());
+
+		// Must add the new document into _attachments, or a later PUT will
+		// delete this new attachment
+		Document newDoc = getDocument(doc.getId());
+		doc.getJsonObject().put("_attachments",
+				newDoc.getJsonObject().get("_attachments"));
 	}
 }
