@@ -1,11 +1,10 @@
 # To do
 * Support large scanned jpgs/pngs instead of just pdfs
-* Can get into state where raw file is open, but trying to import that file, so can't copy over, and it just keeps failing and imports then stop
-* Some css/js resources are still referenced from the web. Must be copied into jar
+* Some css/js resources are still referenced from the web. Must be copied into couchapp
 * Date range filter should auto-activate if a new date is chosen
 
-# Finished but not released
-* Open localhost in browser when jar is run
+# 2.0 - 2013-10-28
+* Rewrote as a Vault app
 
 # 1.1 - 2013-07-13
 * Sort and filter by effective date
