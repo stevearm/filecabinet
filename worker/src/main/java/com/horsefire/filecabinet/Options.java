@@ -10,9 +10,18 @@ public class Options {
 	@Parameter(names = { "-v", "--version" }, description = "Display version", help = true)
 	public boolean version = false;
 
-	@Parameter(names = { "--dbHost" }, description = "Database host")
-	public String dbHost = "127.0.0.1:5984";
+	@Parameter(names = { "--port" }, description = "Database http port")
+	public int port = 5984;
 
-	@Parameter(names = { "--dbName" }, description = "Database name")
+	@Parameter(names = { "--db" }, description = "Database name")
 	public String dbName = "filecabinet";
+
+	@Parameter(names = { "--username" }, description = "Database username")
+	public String username;
+
+	@Parameter(names = { "--password" }, description = "Database password")
+	public String password;
+
+	@Parameter(names = { "--vaultid" }, description = "Current vault id")
+	public String vaultId;
 }

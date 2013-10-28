@@ -1,15 +1,14 @@
 package com.horsefire.filecabinet;
 
 import java.io.IOException;
+import java.util.List;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
+import org.lightcouch.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.horsefire.couchdb.CouchClient;
+import com.google.inject.name.Named;
 import com.horsefire.filecabinet.DocumentProcessor.Factory;
 import com.horsefire.filecabinet.couch.FcDocument;
 
@@ -18,24 +17,27 @@ public class QueueProcessor {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(QueueProcessor.class);
 
-	private final CouchClient m_client;
+	private final CouchDbClientFactory m_clientFactory;
 	private final Factory m_docProcessorFactory;
+	private final String m_dbName;
 
 	@Inject
-	public QueueProcessor(CouchClient client,
-			DocumentProcessor.Factory docProcessorFactory) {
-		m_client = client;
+	public QueueProcessor(CouchDbClientFactory clientFactory,
+			DocumentProcessor.Factory docProcessorFactory,
+			@Named("dbName") String dbName) {
+		m_clientFactory = clientFactory;
 		m_docProcessorFactory = docProcessorFactory;
+		m_dbName = dbName;
 	}
 
-	public void run() throws IOException, ParseException {
-		JSONObject queue = m_client.getView("worker_queue?limit=5");
-		JSONArray rows = (JSONArray) queue.get("rows");
-		LOG.info("{} documents to process", rows.size());
-		for (Object row : rows) {
-			String id = ((JSONObject) row).get("id").toString();
-			LOG.info("Processing id {}", id);
-			FcDocument doc = new FcDocument(m_client.getDocument(id));
+	public void run() throws IOException {
+		View view = m_clientFactory.get(m_dbName).view("ui/worker_queue");
+		view.limit(5);
+		view.includeDocs(true);
+		List<FcDocument> docs = view.query(FcDocument.class);
+		LOG.info("{} documents to process", docs.size());
+		for (FcDocument doc : docs) {
+			LOG.info("Processing id {}", doc._id);
 			m_docProcessorFactory.create(doc).process();
 		}
 	}

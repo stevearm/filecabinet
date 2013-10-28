@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 public class FileCabinet {
 
 	private final QueueProcessor m_queueProcessor;
+
 	private final Importer m_importer;
 
 	@Inject
@@ -45,7 +46,9 @@ public class FileCabinet {
 			return;
 		}
 
-		Guice.createInjector(new FcModule(options))
+		Guice.createInjector(
+				new GuiceModule(options.port, options.dbName, options.username,
+						options.password, options.vaultId))
 				.getInstance(FileCabinet.class).run();
 	}
 }

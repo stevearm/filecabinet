@@ -1,66 +1,52 @@
 package com.horsefire.filecabinet.couch;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.joda.time.DateTime;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
-import com.horsefire.couchdb.Document;
+import com.google.gson.JsonObject;
 
-@SuppressWarnings("unchecked")
-public class FcDocument extends com.horsefire.couchdb.Document {
+public class FcDocument {
 
-	public FcDocument(Document doc) {
-		super(doc.getJsonObject());
-	}
+	public static final String ATTACHMENT_RAW = "raw";
+	public static final String NO_THUMBNAIL = "::none";
 
-	public FcDocument() {
-		super(new JSONObject());
-		final JSONObject json = getJsonObject();
-		json.put("type", "document");
-		json.put("unseen", Boolean.TRUE);
-	}
-
-	public void setFilename(String filename) {
-		m_json.put("filename", filename);
-	}
+	public String _id;
+	public String _rev;
+	public List<String> tags;
+	public String thumbnail;
+	public String filename;
+	public List<Integer> uploaded;
+	public String sha1;
+	public String type = "document";
+	public Boolean unseen = Boolean.TRUE;
+	public List<Integer> effective;
+	public JsonObject _attachments;
 
 	public boolean unseen() {
-		return m_json.get("unseen") != null
-				&& ((Boolean) m_json.get("unseen")).booleanValue();
+		return unseen == null ? false : unseen;
 	}
 
 	public void setUnseen() throws IOException {
-		m_json.put("unseen", Boolean.TRUE);
+		unseen = Boolean.TRUE;
 	}
 
 	public void setUploaded(DateTime dateTime) {
-		JSONArray date = new JSONArray();
+		List<Integer> date = new ArrayList<Integer>();
 		date.add(dateTime.getYear());
 		date.add(dateTime.getMonthOfYear());
 		date.add(dateTime.getDayOfMonth());
-		m_json.put("uploaded", date);
-	}
-
-	public String getSha1() {
-		return (String) m_json.get("sha1");
-	}
-
-	public void setSha1(String sha1) {
-		m_json.put("sha1", sha1);
-	}
-
-	public boolean needsThumb() {
-		Object thumb = m_json.get("thumbnail");
-		if (thumb instanceof Boolean) {
-			return ((Boolean) thumb).booleanValue();
-		}
-		return true;
+		uploaded = date;
 	}
 
 	public boolean hasAttachment(String attachmentName) {
-		JSONObject attachments = (JSONObject) m_json.get("_attachments");
-		return attachments != null && attachments.containsKey(attachmentName);
+		return _attachments != null && _attachments.has(attachmentName);
+	}
+
+	public String getContentType(String attachmentName) {
+		return _attachments.get(attachmentName).getAsJsonObject()
+				.get("content_type").getAsString();
 	}
 }
