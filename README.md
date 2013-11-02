@@ -9,7 +9,7 @@ This is a vault app to organize documents. The web ui allows viewing, tagging, u
   1. If it has no RAW, fail out
   1. If it has no SHA1, download the raw and compute it
   1. If it's missing a thumbnail but has a RAW file, create thumb
-  1. If it's missing a SHA1 but has a RAW file, create SHA1
+  1. If thumbnailing fails, set the thumbnail field to '::none' (or whatever is in FcDocument::NO_THUMBNAIL) so we don't try again next time
   1. Mark as unseen
   1. Save
 1. Get worker status doc (contains import dir and archive requests)
@@ -28,7 +28,7 @@ This is a vault app to organize documents. The web ui allows viewing, tagging, u
 ## Licences
 File Cabinet is licenced under [Apache Licence 2.0][apache20]. It contains libraries licenced under:
 
-* [Apache Licence 2.0][apache20] (Jetty, Gson, Guava, Joda-Time, JCommander)
+* [Apache Licence 2.0][apache20] (Gson, Guava, Joda-Time, JCommander, imgscalr)
 * [Gnu Lesser General Public Licence LGPL][lgpl] (org.swinglabs.pdf-renderer, Logback)
 * MIT Licences ([Tag-it][mit-tagit], [jQuery & jQuery-UI][mit-jquery])
 
