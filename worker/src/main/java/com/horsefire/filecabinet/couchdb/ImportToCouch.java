@@ -14,7 +14,6 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.joda.time.DateTime;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -62,14 +61,6 @@ public class ImportToCouch {
 		throw new IOException("Failed to get a UUID");
 	}
 
-	private JSONArray convert(DateTime dateTime) {
-		JSONArray date = new JSONArray();
-		date.add(dateTime.getYear());
-		date.add(dateTime.getMonthOfYear());
-		date.add(dateTime.getDayOfMonth());
-		return date;
-	}
-
 	private JSONObject doPut(HttpPut put) throws IllegalStateException,
 			IOException, ParseException {
 		HttpResponse response = m_client.execute(put);
@@ -92,16 +83,19 @@ public class ImportToCouch {
 
 	private void importDocument(Document doc) throws IOException,
 			ParseException {
+		String filename = doc.getFilename();
+		filename = filename.replaceAll(" ", "_");
+
 		// Prepare document
 		JSONObject object = new JSONObject();
-		object.put("uploaded", convert(doc.getUploaded()));
-		object.put("effective", convert(doc.getEffective()));
 		object.put("type", "document");
-		object.put("filename", doc.getFilename());
+		object.put("raw", filename);
 		object.put("sha1", doc.getId());
+		object.put("uploaded", doc.getUploaded().toString());
+		object.put("effective", doc.getEffective().toString());
 
 		if (doc.getThumbnailFile().isFile()) {
-			object.put("thumbnail", "thumb.pdf_view");
+			object.put("thumbnail", "thumb/pdf_view");
 		}
 
 		// Prepare tags
@@ -118,14 +112,14 @@ public class ImportToCouch {
 		JSONObject result = doPut(put);
 
 		// Add raw file
-		put = new HttpPut(url + "/raw?rev=" + result.get("rev"));
+		put = new HttpPut(url + "/" + filename + "?rev=" + result.get("rev"));
 		put.setEntity(new FileEntity(doc.getRawFile(), ContentType
 				.create("application/pdf")));
 		result = doPut(put);
 
 		// Add thumbnail
 		if (doc.getThumbnailFile().isFile()) {
-			put = new HttpPut(url + "/thumb.pdf_view?rev=" + result.get("rev"));
+			put = new HttpPut(url + "/thumb/pdf_view?rev=" + result.get("rev"));
 			put.setEntity(new FileEntity(doc.getThumbnailFile(), ContentType
 					.create("image/png")));
 			result = doPut(put);
