@@ -2,16 +2,41 @@
 
 This is a vault app to organize documents. The web ui allows viewing, tagging, uploading, and deleting of documents. The worker jar will allow bulk upload, and do thumbnailing for all documents missing a thumbnail. It will also create downloadable archives if they are desired.
 
+## Models
+
+    {
+      type: "document"
+      raw: String (the key for finding the raw file in attachments)
+      sha1: String (the SHA1 of the attachment pointed to by 'raw')
+      thumbnail: String (the key for finding the thumbnail in attachments, if one is chosen)
+      seen: boolean (if false, show this to users)
+      processed: boolean (if false, show this to the worker)
+      uploaded: ISO-8601 String
+      effective: ISO-8601 String (what day the document relates to. If it's a bill, this would be the issue day)
+      tags: String[] (a list of tags this document relates to)
+      _attachments: {
+        The raw file is uploaded here. The name is the original filename, with anything [^0-9A-Za-z-_.()] replaced with an underscore.
+        Thumbnails are uploaded here, all starting with "thumb/"
+      }
+    }
+
+## Views
+* Worker queue (anything with `processed` missing or false)
+* Human queue (anything with `seen` missing or false)
+* Problems (anything with missing or invalid `raw`, or invalid `thumbnail`)
+
 ## Worker
 1. Start up (given couch host and db name)
-1. Get the server's worker_queue view. For each document listed:
+1. For each doc in worker queue:
   1. download json
   1. If it has no RAW, fail out
   1. If it has no SHA1, download the raw and compute it
-  1. If it's missing a thumbnail but has a RAW file, create thumb
-  1. If thumbnailing fails, set the thumbnail field to '::none' (or whatever is in FcDocument::NO_THUMBNAIL) so we don't try again next time
-  1. Mark as unseen
+  1. If thumbnail is missing or null or empty:
+    1. Create a thumbnail for every algorithm known
+  1. Mark as processed
   1. Save
+
+## Additional worker jobs (not yet implemented)
 1. Get worker status doc (contains import dir and archive requests)
 1. Check import directory. For each file found:
   1. SHA1 file
@@ -23,7 +48,6 @@ This is a vault app to organize documents. The web ui allows viewing, tagging, u
 1. Check archive requests. For each one found:
   1. Create archive file
   1. Attach archive file to archive request
-1. Exit
 
 ## Licences
 File Cabinet is licenced under [Apache Licence 2.0][apache20]. It contains libraries licenced under:
