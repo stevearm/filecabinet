@@ -54,10 +54,14 @@ public class Importer {
 		return null;
 	}
 
+	static String scrubFilename(String filename) {
+		return filename.replaceAll("[^0-9A-Za-z-_.()]", "_");
+	}
+
 	private void importDocument(File file, String sha1) throws IOException {
 		FcDocument doc = new FcDocument();
-		doc.setUploaded(new DateTime());
-		doc.filename = file.getName();
+		doc.uploaded = new DateTime();
+		doc.raw = scrubFilename(file.getName());
 		doc.sha1 = sha1;
 		Response save = m_client.save(doc);
 		if (save.getError() != null && !save.getError().isEmpty()) {
@@ -72,7 +76,8 @@ public class Importer {
 		}
 		byte[] content = Files.toByteArray(file);
 		Attachment attachment = new Attachment(type, content);
-		m_attachmentManager.putAttachment(doc._id, doc._rev, "raw", attachment);
+		m_attachmentManager.putAttachment(doc._id, doc._rev, doc.raw,
+				attachment);
 
 		file.delete();
 	}
@@ -96,7 +101,7 @@ public class Importer {
 				LOG.info("Sha1 {} found for doc id {}", sha1, duplicateDocId);
 				FcDocument doc = m_client
 						.find(FcDocument.class, duplicateDocId);
-				doc.setUnseen();
+				doc.seen = false;
 				m_client.save(doc);
 				file.delete();
 			} else {

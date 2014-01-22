@@ -3,6 +3,7 @@ package com.horsefire.filecabinet;
 import java.io.IOException;
 import java.util.List;
 
+import org.lightcouch.NoDocumentException;
 import org.lightcouch.View;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,11 +35,16 @@ public class QueueProcessor {
 		View view = m_clientFactory.get(m_dbName).view("ui/worker_queue");
 		view.limit(5);
 		view.includeDocs(true);
-		List<FcDocument> docs = view.query(FcDocument.class);
-		LOG.info("{} documents to process", docs.size());
-		for (FcDocument doc : docs) {
-			LOG.info("Processing id {}", doc._id);
-			m_docProcessorFactory.create(doc).process();
+		try {
+			List<FcDocument> docs = view.query(FcDocument.class);
+			LOG.info("{} documents to process", docs.size());
+			for (FcDocument doc : docs) {
+				LOG.info("Processing id {}", doc._id);
+				m_docProcessorFactory.create(doc).process();
+			}
+		} catch (NoDocumentException e) {
+			LOG.error("{} db doesn't have a view called ui/worker_queue",
+					m_dbName);
 		}
 	}
 }

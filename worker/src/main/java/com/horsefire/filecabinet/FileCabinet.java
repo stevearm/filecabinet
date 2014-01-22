@@ -9,16 +9,12 @@ public class FileCabinet {
 
 	private final QueueProcessor m_queueProcessor;
 
-	private final Importer m_importer;
-
 	@Inject
-	public FileCabinet(Importer importer, QueueProcessor queueProcessor) {
-		m_importer = importer;
+	public FileCabinet(QueueProcessor queueProcessor) {
 		m_queueProcessor = queueProcessor;
 	}
 
 	public void run() throws Exception {
-		m_importer.run();
 		m_queueProcessor.run();
 	}
 

@@ -13,15 +13,18 @@ public class Options {
 	@Parameter(names = { "--port" }, description = "Database http port")
 	public int port = 5984;
 
+	@Parameter(names = { "--host" }, description = "Database host")
+	public String host = "127.0.0.1";
+
 	@Parameter(names = { "--db" }, description = "Database name")
 	public String dbName = "filecabinet";
 
-	@Parameter(names = { "--username" }, description = "Database username")
+	@Parameter(names = { "--dbUsername" }, description = "Database username", required = true)
 	public String username;
 
-	@Parameter(names = { "--password" }, description = "Database password")
+	@Parameter(names = { "--dbPassword" }, description = "Database password", required = true)
 	public String password;
 
-	@Parameter(names = { "--vaultid" }, description = "Current vault id")
+	@Parameter(names = { "--id" }, description = "Current vault id", required = true)
 	public String vaultId;
 }

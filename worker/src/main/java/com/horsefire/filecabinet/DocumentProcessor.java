@@ -45,32 +45,19 @@ public class DocumentProcessor {
 		if (m_rawFile == null) {
 			String id = m_doc._id;
 			LOG.debug("Downloading raw file for doc {}", id);
-			m_rawFile = m_attachmentManager.getAttachment(m_doc._id, "raw");
+			m_rawFile = m_attachmentManager.getAttachment(m_doc._id, m_doc.raw);
 		}
 		return m_rawFile;
 	}
 
 	public void process() throws IOException {
-		if (!m_doc.hasAttachment("raw")) {
-			if (!m_doc.unseen()) {
-				m_doc.setUnseen();
-				if (m_doc._id == null) {
-					Response save = m_client.save(m_doc);
-					m_doc._id = save.getId();
-					m_doc._rev = save.getRev();
-				} else {
-					Response save = m_client.update(m_doc);
-					m_doc._rev = save.getRev();
-				}
-			}
-			LOG.info("Doc {} has no attachment 'raw', so ending processing",
-					m_doc._id);
-			return;
+		if (m_doc.hasAttachment(m_doc.raw)) {
+			ensureSha1();
+			ensureThumbs();
+		} else {
+			LOG.info("Doc {} has no attachment for {}, so skipping processing",
+					m_doc.raw, m_doc._id);
 		}
-
-		ensureSha1();
-		ensureThumbs();
-
 		cleanUp();
 	}
 
@@ -88,7 +75,7 @@ public class DocumentProcessor {
 			return;
 		}
 
-		String contentType = m_doc.getContentType("raw");
+		String contentType = m_doc.getContentType(m_doc.raw);
 		for (Thumbnailer thumbnailer : m_thumbnailers.getThumbnailers(MimeType
 				.get(contentType))) {
 			try {
@@ -113,17 +100,19 @@ public class DocumentProcessor {
 				FcDocument newDoc = m_client.find(FcDocument.class, m_doc._id);
 				m_doc._rev = newDoc._rev;
 				m_doc._attachments = newDoc._attachments;
-				m_doc.thumbnail = thumbnailName;
 			} catch (IOException e) {
 				LOG.warn("Error creating thumbnail for {}", m_doc._id, e);
-				m_doc.thumbnail = FcDocument.NO_THUMBNAIL;
 			}
 		}
 	}
 
 	private void cleanUp() throws IOException {
+		if (!m_doc.processed) {
+			m_doc.processed = true;
+			m_modified = true;
+		}
 		if (m_modified) {
-			m_doc.setUnseen();
+			m_doc.seen = false;
 			if (m_doc._id == null) {
 				Response save = m_client.save(m_doc);
 				m_doc._id = save.getId();
