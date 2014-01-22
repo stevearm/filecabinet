@@ -3,4 +3,5 @@
 /worker/.settings
 /worker/target
 /worker/*.launch
+/couchapp/.couchapprc
 notes.txt
