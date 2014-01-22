@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="filecabinet">
+	<head>
+		<meta charset="utf-8" />
+		<title>File Cabinet</title>
+		<link rel="stylesheet" type="text/css" href="style/main.css"/>
+		<style type="text/css">
+		</style>
+	</head>
+	<body ng-controller="FileCabinetCtrl">
+		<div style="float: right">
+			<a href="unseen.html">Unseen</a>
+		</div>
+		<div id="tag-filter">
+			<span ng-repeat="tag in tags">
+				<span class="tag" ng-class="{selected: tag.show}" ng-click="tag.show = !tag.show">{{ tag.name }}</span>
+			</span>
+		</div>
+		<div>
+			<span id="tag-filter-all" class="tag selected" ng-click="showAllTags(true)">All</span>
+			<span id="tag-filter-none" class="tag" ng-click="showAllTags(false)">None</span>
+			<span id="tag-filter-from" class="tag">Effective from <input type="text" size="10"/></span>
+			<span id="tag-filter-to" class="tag">Effective to <input type="text" size="10"/></span>
+			<span id="tag-sort-order" class="tag">Newest first</span>
+			<span id="archive-download-link" class="tag">
+				Download files with pattern
+				<input type="text" size="15" value="%y-%m-%d-%t.pdf">
+			</span>
+			<b>%y</b>ear,
+			<b>%m</b>onth,
+			<b>%d</b>ay,
+			<b>%t</b>ags
+		</div>
+		<div id="files"></div>
+
+		<script src="angular/angular.min.js"></script>
+		<script src="angular/angular-resource.min.js"></script>
+		<script type="text/javascript">
+angular.module("filecabinet", ["ngResource"])
+
+.controller("FileCabinetCtrl", ["$scope", "$http", function($scope, $http) {
+	$scope.tags = [];
+    $http.get("/filecabinet/_design/ui/_view/tags?group=true").success(function(data){
+    	$scope.tags = data.rows.map(function(element){
+    		return { name: element.key, show: false };
+    	});
+    });
+
+    $scope.showAllTags = function(show) {
+    	$scope.tags.forEach(function(element){
+    		element.show = show;
+    	})
+    }
+}]);
+		</script>
+	</body>
+</html>
