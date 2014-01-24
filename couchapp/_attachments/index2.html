@@ -32,17 +32,18 @@
             <b>%t</b>ags
         </div>
         <div id="files">
-            <div class="doc" ng-repeat="doc in docs">
-                <div class="thumb">No thumb<!-- look at docHelper.hasThumbnail(doc) ? '<img src="../../'+doc._id+'/'+doc.thumbnail+'"/> -->
-                    <br><a href="../../{{ doc._id }}/raw" target="_blank">Download</a>
+            <a class="doc" ng-repeat="doc in docs" href="document.html#{{ doc._id }}">
+                <div class="thumb">
+                    <img ng-show="doc.thumbnail" ng-src="/filecabinet/{{ doc._id }}/{{ doc.thumbnail }}"/>
+                    <span ng-hide="doc.thumbnail">No thumb</span>
                 </div>
                 <div class="filename"><span class="key">Filename</span><span class="value">{{ doc.raw }}</span></div>
-                <div><span class="key">Uploaded</span><span class="value">{{ doc.uploaded }}</span></div>
-                <div><span class="key">Effective</span><span class="value">{{ doc.effective }}</span></div>
+                <div><span class="key">Uploaded</span><span class="value">{{ doc.uploaded |date }}</span></div>
+                <div><span class="key">Effective</span><span class="value">{{ doc.effective |date }}</span></div>
                 <ul>
                     <li ng-repeat="tag in doc.tags">{{ tag }}</li>
                 </ul>
-            </div>
+            </a>
         </div>
 
         <script src="angular/angular.min.js"></script>
