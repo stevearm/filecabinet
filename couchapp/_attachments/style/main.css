@@ -18,6 +18,8 @@
 	display: inline-block;
 	width: 450px;
 	cursor: pointer;
+	text-decoration: none;
+	color: black;
 }
 
 .thumb {
