@@ -1,15 +1,15 @@
 <div id="properties">
     <div>
         <span class="key">Filename</span>
-        <span id="filename" class="value"></span>
+        <span class="value"><a href="/filecabinet/{{ doc._id }}/{{ doc.raw }}" target="_blank">{{ doc.raw }}</a></span>
     </div>
     <div>
         <span class="key">Uploaded</span>
-        <span id="uploaded" class="value"></span>
+        <span class="value">{{ doc.uploaded |date: "yyyy-MM-dd" }}</span>
     </div>
     <div>
         <span class="key">Effective</span>
-        <span class="value"><input type="text" id="effective-date" size="20"/></span>
+        <span class="value"><input type="text" size="20" ng-model="doc.effective"/></span>
     </div>
     <div>
         <span class="key">Tags</span>
@@ -17,11 +17,11 @@
     </div>
     <div>
         <span class="key">Seen</span>
-        <span class="value"><button onclick="doc.unseen = true; save();">Mark unseen</button></span>
+        <span class="value">{{ doc.seen || "false" }}</span>
     </div>
     <div>
-        <span class="key">Original</span>
-        <span class="value"><a id="download" href="" target="_blank">Download</a></span>
+        <span class="key">Processed</span>
+        <span class="value">{{ doc.processed || "false" }}</span>
     </div>
 </div>
 <div id="thumbnail">

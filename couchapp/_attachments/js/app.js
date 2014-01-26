@@ -2,8 +2,10 @@
 
 angular.module("filecabinet", [
     "ngRoute",
+    "ngResource",
     "filecabinet.controllers",
-    "filecabinet.directives"
+    "filecabinet.directives",
+    "filecabinet.factories"
 ]).
 
 config(['$routeProvider', function($routeProvider) {

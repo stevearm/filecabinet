@@ -29,8 +29,7 @@ angular.module("filecabinet.controllers", [])
     }, true);
 }])
 
-.controller("DocumentCtrl", ["$scope", "$http", "$location", function($scope, $http, $location) {
-    console.log($location.path);
-
-    $scope.imgSrc = "/filecabinet/e2a382b948cff09c5ef3b5cf4d13201c/thumb/pdf_view";
+.controller("DocumentCtrl", ["$scope", "$routeParams", "Document", function($scope, $routeParams, Document) {
+    $scope.doc = Document.get({id: $routeParams.docId });
+    $scope.imgSrc = "/filecabinet/" + $routeParams.docId + "/thumb/pdf_view";
 }])
