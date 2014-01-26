@@ -4,4 +4,7 @@
 /worker/target
 /worker/*.launch
 /couchapp/.couchapprc
-notes.txt
+
+# Ignore unused files from various distributions
+/couchapp/_attachments/vendor/angular-1.2.10/*
+/couchapp/_attachments/vendor/jasmine-2.0.0/*
