@@ -1,0 +1,34 @@
+<div id="properties">
+    <div>
+        <span class="key">Filename</span>
+        <span id="filename" class="value"></span>
+    </div>
+    <div>
+        <span class="key">Uploaded</span>
+        <span id="uploaded" class="value"></span>
+    </div>
+    <div>
+        <span class="key">Effective</span>
+        <span class="value"><input type="text" id="effective-date" size="20"/></span>
+    </div>
+    <div>
+        <span class="key">Tags</span>
+        <span class="value"><input name="tags" id="tags" style="position:relative" value=""/></span>
+    </div>
+    <div>
+        <span class="key">Seen</span>
+        <span class="value"><button onclick="doc.unseen = true; save();">Mark unseen</button></span>
+    </div>
+    <div>
+        <span class="key">Original</span>
+        <span class="value"><a id="download" href="" target="_blank">Download</a></span>
+    </div>
+</div>
+<div id="thumbnail">
+    <div id="thumb-select" style="display: none">
+        Current: <input type="text" disabled="true" id="thumb-current"/>
+    </div>
+    <div id="full-image-viewport">
+        <img id="full-image" ng-src="{{ imgSrc }}" draggable/>
+    </div>
+</div>

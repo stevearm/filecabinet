@@ -88,3 +88,25 @@
 	color: #fff;
 	background-color: #707070;
 }
+
+/* Draggable thumbnail **********************************************/
+
+#properties {
+    width: 400px;
+    display: inline-block;
+    vertical-align: top;
+}
+#thumbnail {
+    width: 400px;
+    display: inline-block;
+}
+#full-image-viewport {
+    height: 400px;
+    width: 400px;
+    overflow: hidden;
+    border: solid thin black;
+}
+#full-image {
+    position: relative;
+    cursor: move;
+}

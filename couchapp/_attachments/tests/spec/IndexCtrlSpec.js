@@ -1,6 +1,6 @@
 describe("my test suite", function() {
 
-    beforeEach(module("filecabinet"));
+    beforeEach(module("filecabinet.controllers"));
 
     var $scope, $httpBackend, createController;
 

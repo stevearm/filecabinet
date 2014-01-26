@@ -1,4 +1,6 @@
-angular.module("filecabinet", [])
+"use strict";
+
+angular.module("filecabinet.controllers", [])
 
 .controller("IndexCtrl", ["$scope", "$http", function($scope, $http) {
     $scope.tags = [];
@@ -25,4 +27,10 @@ angular.module("filecabinet", [])
                 $scope.docs = result.rows.map(function(element){ return element.doc; });
             });
     }, true);
-}]);
+}])
+
+.controller("DocumentCtrl", ["$scope", "$http", "$location", function($scope, $http, $location) {
+    console.log($location.path);
+
+    $scope.imgSrc = "/filecabinet/e2a382b948cff09c5ef3b5cf4d13201c/thumb/pdf_view";
+}])

@@ -4,52 +4,19 @@
         <meta charset="utf-8" />
         <title>File Cabinet</title>
         <link rel="stylesheet" type="text/css" href="css/main.css"/>
-        <style type="text/css">
-        </style>
     </head>
-    <body ng-controller="IndexCtrl">
+    <body>
         <div style="float: right">
-            <a href="unseen.html">Unseen</a>
+            <a href="#/">All docs</a> |
+            <a href="#/unseen">Unseen</a>
         </div>
-        <div id="tag-filter">
-            <span ng-repeat="tag in tags">
-                <span class="tag" ng-class="{selected: tag.show}" ng-click="tag.show = !tag.show">{{ tag.name }}</span>
-            </span>
-        </div>
-        <div>
-            <span id="tag-filter-all" class="tag selected" ng-click="showAllTags(true)">All</span>
-            <span id="tag-filter-none" class="tag" ng-click="showAllTags(false)">None</span>
-            <span id="tag-filter-from" class="tag">Effective from <input type="text" size="10"/></span>
-            <span id="tag-filter-to" class="tag">Effective to <input type="text" size="10"/></span>
-            <span id="tag-sort-order" class="tag">Newest first</span>
-            <span id="archive-download-link" class="tag">
-                Download files with pattern
-                <input type="text" size="15" value="%y-%m-%d-%t.pdf">
-            </span>
-            <b>%y</b>ear,
-            <b>%m</b>onth,
-            <b>%d</b>ay,
-            <b>%t</b>ags
-        </div>
-        <div id="files">
-            <a class="doc" ng-repeat="doc in docs" href="document.html#{{ doc._id }}">
-                <div class="thumb">
-                    <img ng-show="doc.thumbnail" ng-src="/filecabinet/{{ doc._id }}/{{ doc.thumbnail }}"/>
-                    <span ng-hide="doc.thumbnail">No thumb</span>
-                </div>
-                <div class="filename"><span class="key">Filename</span><span class="value">{{ doc.raw }}</span></div>
-                <div><span class="key">Uploaded</span><span class="value">{{ doc.uploaded |date }}</span></div>
-                <div><span class="key">Effective</span><span class="value">{{ doc.effective |date }}</span></div>
-                <ul>
-                    <li ng-repeat="tag in doc.tags">{{ tag }}</li>
-                </ul>
-            </a>
-        </div>
+        <div ng-view></div>
 
-  		<script src="lib/angular-1.2.10/angular.min.js"></script>
-  		<script src="lib/angular-1.2.10/angular-resource.min.js"></script>
-        <script src="js/IndexCtrl.js"></script>
-        <script type="text/javascript">
-        </script>
+        <script src="lib/angular-1.2.10/angular.min.js"></script>
+        <script src="lib/angular-1.2.10/angular-resource.min.js"></script>
+        <script src="lib/angular-1.2.10/angular-route.min.js"></script>
+        <script src="js/controllers.js"></script>
+        <script src="js/directives.js"></script>
+        <script src="js/app.js"></script>
     </body>
 </html>
