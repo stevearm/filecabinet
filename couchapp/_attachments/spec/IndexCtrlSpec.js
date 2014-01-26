@@ -2,11 +2,11 @@ describe("my test suite", function() {
 
     beforeEach(module("filecabinet"));
 
-    var $scope, $http, $rootScope, createController;
+    var $scope, $httpBackend, createController;
 
     beforeEach(inject(function($injector) {
-        $rootScope = $injector.get("$rootScope");
-        $scope = $rootScope.$new();
+        $scope = $injector.get("$rootScope").$new();
+        $httpBackend = $injector.get("$httpBackend");
 
         var $controller = $injector.get("$controller");
 
@@ -17,12 +17,35 @@ describe("my test suite", function() {
         };
     }));
 
-    it("should affect all tags' visibility", function() {
-        createController();
-        $scope.tags = [
-            { name: "first name", show: true},
-            { name: "second name", show: false}
-        ];
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    var prepareForTagLoad = function() {
+        $httpBackend
+            .expect("GET", "/filecabinet/_design/ui/_view/tags?group=true")
+            .respond({ rows: [
+                { key: "first name" },
+                { key: "second name" }
+            ]});
+    };
+
+    it("should load tags on startup", function() {
+        prepareForTagLoad();
+        $scope.$apply(function() { createController(); });
+        expect($scope.tags).toEqual([]);
+        $httpBackend.flush();
+        expect($scope.tags).toEqual([
+            { name: "first name", show: false },
+            { name: "second name", show: false }
+        ]);
+    });
+
+    it("should affect visiblity of all tags", function() {
+        prepareForTagLoad();
+        $scope.$apply(function() { createController(); });
+        $httpBackend.flush();
 
         $scope.showAllTags(true);
         $scope.tags.forEach(function(e){ expect(e.show).toBe(true); });

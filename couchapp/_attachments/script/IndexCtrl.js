@@ -1,16 +1,15 @@
 angular.module("filecabinet", [])
 
 .controller("IndexCtrl", ["$scope", "$http", function($scope, $http) {
-    console.log("Loaded controller");
     $scope.tags = [];
     $scope.docs = [];
-/*
+
     $http.get("/filecabinet/_design/ui/_view/tags?group=true").success(function(data){
         $scope.tags = data.rows.map(function(element){
             return { name: element.key, show: false };
         });
     });
-*/
+
     $scope.showAllTags = function(show) {
         $scope.tags.forEach(function(element){ element.show = show; });
     }
@@ -21,9 +20,9 @@ angular.module("filecabinet", [])
             $scope.docs = [];
             return;
         }
-        /*$http.post('/filecabinet/_design/ui/_view/tags?reduce=false&include_docs=true', {'keys':tags})
+        $http.post('/filecabinet/_design/ui/_view/tags?reduce=false&include_docs=true', {'keys':tags})
             .success(function(result){
                 $scope.docs = result.rows.map(function(element){ return element.doc; });
-            });*/
+            });
     }, true);
 }]);
