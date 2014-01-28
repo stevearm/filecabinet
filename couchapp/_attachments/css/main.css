@@ -1,3 +1,8 @@
+/* Fix a gap in ui-bootstrap's styling */
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+/********************************/
+
 .key {
 	display: inline-block;
 	width: 70px;

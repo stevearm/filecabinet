@@ -12,6 +12,12 @@ angular.module("filecabinet.factories", [])
     });
 
     Document.prototype.$save = function() {
+
+        // Scrub any objects into strings to prepare for save
+        if (this.effective instanceof Date) {
+            this.effective = this.effective.toISOString();
+        }
+
         var config = { data: this, method: "POST", url: db };
         if ("_id" in this) {
             config.method = "PUT";

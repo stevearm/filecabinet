@@ -3,6 +3,7 @@
 angular.module("filecabinet", [
     "ngRoute",
     "ngResource",
+    "ui.bootstrap",
     "filecabinet.controllers",
     "filecabinet.directives",
     "filecabinet.factories"

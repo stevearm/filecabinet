@@ -1,34 +1,43 @@
-<div id="properties">
-    <div>
-        <span class="key">Filename</span>
-        <span class="value"><a href="/filecabinet/{{ doc._id }}/{{ doc.raw }}" target="_blank">{{ doc.raw }}</a></span>
+<div class="container">
+<div class="row">
+    <div class="col-md-6">
+        <form role="form">
+            <div class="form-group">
+                <label>Filename</label>
+                <p class="form-control-static"><a href="/filecabinet/{{ doc._id }}/{{ doc.raw }}" target="_blank">{{ doc.raw }}</a></p>
+            </div>
+            <div class="form-group">
+                <label>Uploaded</label>
+                <p class="form-control-static">{{ doc.uploaded |date: "yyyy-MM-dd" }}</p>
+            </div>
+            <div class="form-group">
+                <label>Effective</label>
+                <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="doc.effective" close-text="Close" />
+            </div>
+            <div class="form-group">
+                <label>Tags</label>
+                <input type="text" class="form-control" value="{{ doc.tags |json }}"/>
+            </div>
+            <div class="form-group">
+                <label>Seen</label>
+                <p class="form-control-static" ng-click="doc.seen = !doc.seen">{{ doc.seen || "false" }}</p>
+            </div>
+            <div class="form-group">
+                <label>Processed</label>
+                <p class="form-control-static" ng-click="doc.processed = !doc.processed">{{ doc.processed || "false" }}</p>
+            </div>
+            <div class="form-group">
+                <button ng-click="doc.$save()">Save</button>
+            </div>
+        </form>
     </div>
-    <div>
-        <span class="key">Uploaded</span>
-        <span class="value">{{ doc.uploaded |date: "yyyy-MM-dd" }}</span>
-    </div>
-    <div>
-        <span class="key">Effective</span>
-        <span class="value"><input type="text" size="20" ng-model="doc.effective"/></span>
-    </div>
-    <div>
-        <span class="key">Tags</span>
-        <span class="value"><input name="tags" id="tags" style="position:relative" value=""/></span>
-    </div>
-    <div>
-        <span class="key">Seen</span>
-        <span class="value">{{ doc.seen || "false" }}</span>
-    </div>
-    <div>
-        <span class="key">Processed</span>
-        <span class="value">{{ doc.processed || "false" }}</span>
+    <div id="thumbnail" class="col-md-6">
+        <div id="thumb-select" style="display: none">
+            Current: <input type="text" disabled="true" id="thumb-current"/>
+        </div>
+        <div id="full-image-viewport">
+            <img id="full-image" ng-src="{{ imgSrc }}" draggable/>
+        </div>
     </div>
 </div>
-<div id="thumbnail">
-    <div id="thumb-select" style="display: none">
-        Current: <input type="text" disabled="true" id="thumb-current"/>
-    </div>
-    <div id="full-image-viewport">
-        <img id="full-image" ng-src="{{ imgSrc }}" draggable/>
-    </div>
 </div>

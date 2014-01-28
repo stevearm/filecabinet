@@ -30,6 +30,7 @@ angular.module("filecabinet.controllers", [])
 }])
 
 .controller("DocumentCtrl", ["$scope", "$routeParams", "Document", function($scope, $routeParams, Document) {
-    $scope.doc = Document.get({id: $routeParams.docId });
-    $scope.imgSrc = "/filecabinet/" + $routeParams.docId + "/thumb/pdf_view";
+    var docId = $routeParams.docId;
+    $scope.doc = Document.get({id: docId });
+    $scope.imgSrc = "/filecabinet/" + docId + "/thumb/pdf_view";
 }])
