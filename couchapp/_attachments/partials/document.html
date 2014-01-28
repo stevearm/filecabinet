@@ -16,7 +16,9 @@
             </div>
             <div class="form-group">
                 <label>Tags</label>
-                <input type="text" class="form-control" value="{{ doc.tags |json }}"/>
+                <tags-input ng-model="doc.tags" placeholder="Add tags">
+                    <auto-complete source="loadTags($query)" min-length="1" debounce-delay="1"></auto-complete>
+                </tags-input>
             </div>
             <div class="form-group">
                 <label>Seen</label>

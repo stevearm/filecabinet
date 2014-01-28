@@ -4,6 +4,7 @@ angular.module("filecabinet", [
     "ngRoute",
     "ngResource",
     "ui.bootstrap",
+    "ngTagsInput",
     "filecabinet.controllers",
     "filecabinet.directives",
     "filecabinet.factories"
