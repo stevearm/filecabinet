@@ -11,11 +11,17 @@ angular.module("filecabinet", [
 ]).
 
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when(	'/', 
-  					{	templateUrl: 	'partials/index.html',
-  						controller: 	'IndexCtrl' });
-  $routeProvider.when(	'/doc/:docId',
-  					{	templateUrl: 	'partials/document.html',
-  						controller: 	'DocumentCtrl' });
-  $routeProvider.otherwise({redirectTo: '/'});
+    $routeProvider.when('/', {
+        templateUrl:    'partials/index.html',
+        controller:     'IndexCtrl'
+    });
+    $routeProvider.when('/doc/:docId', {
+        templateUrl:    'partials/document.html',
+        controller:     'DocumentCtrl'
+    });
+    $routeProvider.when('/unseen', {
+        templateUrl:    'partials/unseen.html',
+        controller:     'UnseenCtrl'
+    })
+    $routeProvider.otherwise({redirectTo: '/'});
 }]);

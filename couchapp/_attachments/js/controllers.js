@@ -52,4 +52,14 @@ angular.module("filecabinet.controllers", [])
             return deferred.promise;
         };
     }
+])
+
+.controller("UnseenCtrl", [
+    "$scope", "$http",
+    function($scope, $http) {
+        $scope.docs = [];
+        $http.get("/filecabinet/_design/ui/_view/human_queue?include_docs=true&limit=10").success(function(data){
+            $scope.docs = data.rows.map(function(e){ return e.doc; });
+        });
+    }
 ]);
