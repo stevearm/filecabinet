@@ -1,0 +1,12 @@
+<a class="doc" href="#/doc/{{ doc._id }}">
+    <div class="thumb">
+        <img ng-show="doc.thumbnail" ng-src="/filecabinet/{{ doc._id }}/{{ doc.thumbnail }}"/>
+        <span ng-hide="doc.thumbnail">No thumb</span>
+    </div>
+    <div class="filename"><span class="key">Filename</span><span class="value">{{ doc.raw }}</span></div>
+    <div><span class="key">Uploaded</span><span class="value">{{ doc.uploaded |date }}</span></div>
+    <div><span class="key">Effective</span><span class="value">{{ doc.effective |date }}</span></div>
+    <ul>
+        <li ng-repeat="tag in doc.tags">{{ tag }}</li>
+    </ul>
+</a>
