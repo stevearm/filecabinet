@@ -22,6 +22,10 @@ config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/unseen', {
         templateUrl:    'partials/unseen.html',
         controller:     'UnseenCtrl'
-    })
+    });
+    $routeProvider.when('/unprocessed', {
+        templateUrl:    'partials/unseen.html',
+        controller:     'UnprocessedCtrl'
+    });
     $routeProvider.otherwise({redirectTo: '/'});
 }]);

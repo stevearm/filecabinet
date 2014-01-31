@@ -57,8 +57,20 @@ angular.module("filecabinet.controllers", [])
 .controller("UnseenCtrl", [
     "$scope", "$http",
     function($scope, $http) {
+        $scope.queueName = "unseen";
         $scope.docs = [];
         $http.get("/filecabinet/_design/ui/_view/human_queue?include_docs=true&limit=10").success(function(data){
+            $scope.docs = data.rows.map(function(e){ return e.doc; });
+        });
+    }
+])
+
+.controller("UnprocessedCtrl", [
+    "$scope", "$http",
+    function($scope, $http) {
+        $scope.queueName = "unprocessed";
+        $scope.docs = [];
+        $http.get("/filecabinet/_design/ui/_view/worker_queue?include_docs=true&limit=10").success(function(data){
             $scope.docs = data.rows.map(function(e){ return e.doc; });
         });
     }
