@@ -37,13 +37,19 @@ angular.module("filecabinet.controllers", [])
     function($scope, $routeParams, $http, $q, Document) {
         var docId = $routeParams.docId;
         $scope.doc = Document.get({id: docId });
-        $scope.imgSrc = "/filecabinet/" + docId + "/thumb/pdf_view";
 
+        $scope.attachmentUrl = function(docId, attachmentName) {
+            if (!docId || !attachmentName) {
+                return "";
+            }
+            return "/filecabinet/" + docId + "/" + attachmentName;
+        }
+
+        // allTags is just used inside the deferred loadTags. Should clean this up
         $scope.allTags = [];
         $http.get("/filecabinet/_design/ui/_view/tags?group=true").success(function(data){
             $scope.allTags = data.rows.map(function(element){ return element.key; });
         });
-
         $scope.loadTags = function(input) {
             var relevantTags = $scope.allTags.filter(function(e){ return e.indexOf(input) != -1; });
 

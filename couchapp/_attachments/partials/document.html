@@ -4,7 +4,7 @@
         <form role="form">
             <div class="form-group">
                 <label>Filename</label>
-                <p class="form-control-static"><a href="/filecabinet/{{ doc._id }}/{{ doc.raw }}" target="_blank">{{ doc.raw }}</a></p>
+                <p class="form-control-static"><a href="attachmentUrl(doc._id, doc.raw)" target="_blank">{{ doc.raw }}</a></p>
             </div>
             <div class="form-group">
                 <label>Uploaded</label>
@@ -34,11 +34,12 @@
         </form>
     </div>
     <div id="thumbnail" class="col-md-6">
-        <div id="thumb-select" style="display: none">
-            Current: <input type="text" disabled="true" id="thumb-current"/>
-        </div>
-        <div id="full-image-viewport">
-            <img id="full-image" ng-src="{{ imgSrc }}" draggable/>
+        <ul>
+            <li ng-click="doc.thumbnail = null">No thumbnail</li>
+            <li ng-repeat="thumb in doc.thumbs()" ng-click="doc.thumbnail = thumb">{{ thumb }}</li>
+        </ul>
+        <div id="full-image-viewport" ng-show="doc.thumbnail">
+            <img id="full-image" ng-src="{{ attachmentUrl(doc._id, doc.thumbnail) }}" draggable/>
         </div>
     </div>
 </div>
