@@ -16,6 +16,7 @@
 
 	<!-- Levels are OFF, ERROR, WARN, INFO, DEBUG, TRACE, ALL -->
 	<logger name="org.eclipse.jetty" level="WARN"/>
+	<logger name="org.apache.http" level="WARN"/>
 
 	<root level="DEBUG">
 		<appender-ref ref="CONSOLE" />
