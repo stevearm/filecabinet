@@ -43,8 +43,8 @@ public class FileCabinet {
 		}
 
 		Guice.createInjector(
-				new GuiceModule(options.port, options.dbName, options.username,
-						options.password, options.vaultId, options.maxDocs))
-				.getInstance(FileCabinet.class).run();
+				new GuiceModule(options.host, options.port, options.dbName,
+						options.username, options.password, options.vaultId,
+						options.maxDocs)).getInstance(FileCabinet.class).run();
 	}
 }

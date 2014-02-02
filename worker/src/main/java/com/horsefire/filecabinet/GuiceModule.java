@@ -9,6 +9,7 @@ import com.google.inject.name.Names;
 
 public class GuiceModule extends AbstractModule {
 
+	private final String m_dbHost;
 	private final Integer m_dbPort;
 	private final String m_dbName;
 	private final String m_dbUsername;
@@ -16,8 +17,9 @@ public class GuiceModule extends AbstractModule {
 	private final String m_vaultId;
 	private final int m_maxDocs;
 
-	public GuiceModule(int port, String dbName, String username,
+	public GuiceModule(String host, int port, String dbName, String username,
 			String password, String vaultId, int maxDocs) {
+		m_dbHost = host;
 		m_dbPort = Integer.valueOf(port);
 		m_dbName = dbName;
 		m_dbUsername = username;
@@ -27,6 +29,8 @@ public class GuiceModule extends AbstractModule {
 	}
 
 	private void bindMemberConstants() {
+		bind(String.class).annotatedWith(Names.named("dbHost")).toInstance(
+				m_dbHost);
 		bind(Integer.class).annotatedWith(Names.named("dbPort")).toInstance(
 				m_dbPort);
 		bind(String.class).annotatedWith(Names.named("dbName")).toInstance(
@@ -44,9 +48,6 @@ public class GuiceModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bindMemberConstants();
-
-		bind(String.class).annotatedWith(Names.named("dbHost")).toInstance(
-				"127.0.0.1");
 
 		bind(GsonBuilder.class).toProvider(GsonBuilderProvider.class);
 		bind(CouchDbClient.class).toProvider(CouchDbClientProvider.class);
