@@ -79,7 +79,7 @@ public class DocumentProcessor {
 		for (Thumbnailer thumbnailer : m_thumbnailers.getThumbnailers(MimeType
 				.get(contentType))) {
 			try {
-				final String thumbnailName = "thumb."
+				final String thumbnailName = "thumb/"
 						+ thumbnailer.suggestedName();
 				if (m_doc.hasAttachment(thumbnailName)) {
 					continue;
