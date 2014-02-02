@@ -7,7 +7,8 @@ angular.module("filecabinet", [
     "ngTagsInput",
     "filecabinet.controllers",
     "filecabinet.directives",
-    "filecabinet.factories"
+    "filecabinet.factories",
+    "filecabinet.services"
 ]).
 
 config(['$routeProvider', function($routeProvider) {

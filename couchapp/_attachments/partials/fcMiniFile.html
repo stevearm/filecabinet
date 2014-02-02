@@ -1,6 +1,6 @@
 <a class="doc" href="#/doc/{{ doc._id }}">
     <div class="thumb">
-        <img ng-show="doc.thumbnail" ng-src="/filecabinet/{{ doc._id }}/{{ doc.thumbnail }}"/>
+        <img ng-show="doc.thumbnail" ng-src="{{ thumbUrl() }}"/>
         <span ng-hide="doc.thumbnail">No thumb</span>
     </div>
     <div class="filename"><span class="key">Filename</span><span class="value">{{ doc.raw }}</span></div>

@@ -40,12 +40,20 @@ angular.module("filecabinet.directives", [])
     }
 })
 
-.directive('fcMiniFile', function () {
-  return {
-    restrict: 'E', // allow as an element; the default is only an attribute
-    scope: {       // create an isolate scope
-      doc: '='  // map the var in the doc attribute to this scope
-    },
-    templateUrl: 'partials/fcMiniFile.html', // load the template file
-  };
-});
+.directive('fcMiniFile', [
+    "CouchService",
+    function (CouchService) {
+        return {
+            restrict: 'E', // allow as an element; the default is only an attribute
+            scope: {       // create an isolate scope
+                doc: '='  // map the var in the doc attribute to this scope
+            },
+            templateUrl: 'partials/fcMiniFile.html', // load the template file
+            controller: function($scope){
+                $scope.thumbUrl = function() {
+                    return "/" + CouchService.currentDb() + "/" + $scope.doc._id + "/" + $scope.doc.thumbnail;
+                };
+            }
+        };
+    }
+]);
