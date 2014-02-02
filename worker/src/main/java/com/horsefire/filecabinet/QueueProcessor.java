@@ -21,19 +21,23 @@ public class QueueProcessor {
 	private final CouchDbClientFactory m_clientFactory;
 	private final Factory m_docProcessorFactory;
 	private final String m_dbName;
+	private final int m_maxDocs;
 
 	@Inject
 	public QueueProcessor(CouchDbClientFactory clientFactory,
 			DocumentProcessor.Factory docProcessorFactory,
-			@Named("dbName") String dbName) {
+			@Named("dbName") String dbName, @Named("maxDocs") Integer maxDocs) {
 		m_clientFactory = clientFactory;
 		m_docProcessorFactory = docProcessorFactory;
 		m_dbName = dbName;
+		m_maxDocs = maxDocs;
 	}
 
 	public void run() throws IOException {
 		View view = m_clientFactory.get(m_dbName).view("ui/worker_queue");
-		view.limit(5);
+		if (m_maxDocs != -1) {
+			view.limit(m_maxDocs);
+		}
 		view.includeDocs(true);
 		try {
 			List<FcDocument> docs = view.query(FcDocument.class);

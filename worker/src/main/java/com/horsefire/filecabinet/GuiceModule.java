@@ -14,14 +14,16 @@ public class GuiceModule extends AbstractModule {
 	private final String m_dbUsername;
 	private final String m_dbPassword;
 	private final String m_vaultId;
+	private final int m_maxDocs;
 
 	public GuiceModule(int port, String dbName, String username,
-			String password, String vaultId) {
+			String password, String vaultId, int maxDocs) {
 		m_dbPort = Integer.valueOf(port);
 		m_dbName = dbName;
 		m_dbUsername = username;
 		m_dbPassword = password;
 		m_vaultId = vaultId;
+		m_maxDocs = maxDocs;
 	}
 
 	private void bindMemberConstants() {
@@ -35,6 +37,8 @@ public class GuiceModule extends AbstractModule {
 				(m_dbPassword == null) ? "" : m_dbPassword);
 		bind(String.class).annotatedWith(Names.named("vaultId")).toInstance(
 				(m_vaultId == null) ? "" : m_vaultId);
+		bind(Integer.class).annotatedWith(Names.named("maxDocs")).toInstance(
+				m_maxDocs);
 	}
 
 	@Override
