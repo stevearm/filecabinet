@@ -5,6 +5,7 @@ angular.module("filecabinet", [
     "ngResource",
     "ui.bootstrap",
     "ngTagsInput",
+    "angularFileUpload",
     "filecabinet.controllers",
     "filecabinet.directives",
     "filecabinet.factories",
@@ -27,6 +28,10 @@ config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/unprocessed', {
         templateUrl:    'partials/unseen.html',
         controller:     'UnprocessedCtrl'
+    });
+    $routeProvider.when('/upload', {
+        templateUrl:    'partials/upload.html',
+        controller:     'UploadCtrl'
     });
     $routeProvider.otherwise({redirectTo: '/'});
 }]);

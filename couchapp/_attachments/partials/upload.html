@@ -1,0 +1,14 @@
+Select files: <input type="file" ng-file-select="onFileSelect($files)" multiple>
+
+<div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class" ng-show="dropSupported">or drop files here</div>
+
+<ul>
+	<li ng-repeat="upload in uploads">
+		<span ng-hide="upload.id">{{ upload.status }}</span>
+		<a href="#/doc/{{ upload.id }}" ng-show="upload.id">{{ upload.status }}</a>
+		<span ng-show="upload.attachmentUpload">
+			Progress: {{ upload.progress }}% <button ng-click="upload.attachmentUpload.abort()">Cancel</button>
+		</span>
+	</li>
+</ul>
+

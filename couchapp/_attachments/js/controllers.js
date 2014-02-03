@@ -80,4 +80,87 @@ angular.module("filecabinet.controllers", [])
             $scope.docs = data.rows.map(function(e){ return e.doc; });
         });
     }
+])
+
+.controller("UploadCtrl", [
+    "$scope", "$http", "$upload",
+    function($scope, $http, $upload) {
+        $scope.uploads = [];
+
+        $scope.onFileSelect = function($files) {
+            $files.forEach(function(file) {
+                var upload = {
+                    selectedFile: file,
+                    filename: file.name.replace(/[^0-9A-Za-z-_()]/g, "_")
+                };
+                $scope.uploads.push(upload);
+                createDocument(upload);
+            });
+        };
+
+        var getLocalISO8601 = function(date) {
+            function pad(num) {
+                var norm = Math.abs(Math.floor(num));
+                return (norm < 10 ? '0' : '') + norm;
+            }
+
+            var tzo = -date.getTimezoneOffset();
+            var sign = tzo >= 0 ? '+' : '-';
+            return date.getFullYear() 
+                + '-' + pad(date.getMonth()+1)
+                + '-' + pad(date.getDate())
+                + 'T' + pad(date.getHours())
+                + ':' + pad(date.getMinutes()) 
+                + ':' + pad(date.getSeconds()) 
+                + sign + pad(tzo / 60) 
+                + ':' + pad(tzo % 60);
+        };
+
+        var createDocument = function(upload) {
+            upload.status = "Creating db record";
+            $http({
+                method: "POST",
+                url: "/filecabinet/",
+                data: {
+                    type: "document",
+                    unseen: true,
+                    uploaded: getLocalISO8601(new Date()),
+                    raw: upload.filename
+                }
+            }).error(function(data, status, headers, config) {
+                upload.status = "Error creating document";
+                console.log("Error creating document", data, status, headers, config);
+            }).success(function(data, status, headers, config) {
+                upload.status = "Document created";
+                upload.id = data.id;
+                upload.rev = data.rev;
+                uploadAttachment(upload);
+            });
+        };
+
+        var uploadAttachment = function(upload) {
+            upload.status = "Uploading " + upload.filename;
+            var fileReader = new FileReader();
+            fileReader.readAsArrayBuffer(upload.selectedFile);
+            fileReader.onload = function(e) {
+                upload.attachmentUpload = $upload.http({
+                    url: '/filecabinet/' + upload.id + '/' + upload.filename + '?rev=' + upload.rev,
+                    headers: {'Content-Type': upload.selectedFile.type},
+                    data: e.target.result,
+                    method: 'PUT'
+                }).then(function(response) {
+                    if (response.data.ok) {
+                        upload.status = "Finished uploading";
+                        upload.rev = response.rev;
+                        delete upload.attachmentUpload;
+                    } else {
+                        console.log("Got upload response", response);
+                    }
+                }, null, function(evt) {
+                    // Math.min is to fix IE which reports 200% sometimes
+                    upload.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                });
+            };
+        };
+    }
 ]);
