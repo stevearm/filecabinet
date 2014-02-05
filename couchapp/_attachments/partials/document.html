@@ -16,7 +16,7 @@
             </div>
             <div class="form-group">
                 <label>Tags</label>
-                <tags-input ng-model="doc.tags" placeholder="Add tags">
+                <tags-input ng-model="doc.tags" placeholder="Add tags" allowed-tags-pattern="^[0-9A-Za-z-.]+$">
                     <auto-complete source="loadTags($query)" min-length="1" debounce-delay="1"></auto-complete>
                 </tags-input>
             </div>
