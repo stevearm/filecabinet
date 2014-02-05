@@ -1,6 +1,7 @@
 Select files: <input type="file" ng-file-select="onFileSelect($files)" multiple>
 
-<div ng-file-drop="onFileSelect($files)" ng-file-drag-over-class="optional-css-class" ng-show="dropSupported">or drop files here</div>
+<div ng-file-drop="onFileSelect($files)" class="drop-box" ng-show="dropSupported">or drop files here</div>
+<div ng-file-drop-available="dropSupported=true" ng-show="!dropSupported">HTML5 drag-n-drop not supported!</div>
 
 <ul>
 	<li ng-repeat="upload in uploads">
