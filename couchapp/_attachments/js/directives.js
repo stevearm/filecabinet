@@ -51,7 +51,10 @@ angular.module("filecabinet.directives", [])
             templateUrl: 'partials/fcMiniFile.html', // load the template file
             controller: function($scope){
                 $scope.thumbUrl = function() {
-                    return "/" + CouchService.currentDb() + "/" + $scope.doc._id + "/" + $scope.doc.thumbnail;
+                    if ($scope.doc.thumbnail) {
+                        return "/" + CouchService.currentDb() + "/" + $scope.doc._id + "/" + $scope.doc.thumbnail;
+                    }
+                    return null;
                 };
             }
         };
