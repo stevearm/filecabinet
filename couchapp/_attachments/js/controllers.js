@@ -36,14 +36,9 @@ angular.module("filecabinet.controllers", [])
     "$scope", "$routeParams", "$http", "$q", "Document", "CouchService",
     function($scope, $routeParams, $http, $q, Document, CouchService) {
         var docId = $routeParams.docId;
-        $scope.doc = Document.get({id: docId });
+        $scope.doc = Document.get({id: docId }, function(){ $scope.doc.tags = $scope.doc.tags || []; });
 
-        $scope.attachmentUrl = function(docId, attachmentName) {
-            if (!docId || !attachmentName) {
-                return "";
-            }
-            return "/" + CouchService.currentDb() + "/" + docId + "/" + attachmentName;
-        }
+        $scope.attachmentUrl = CouchService.attachmentUrl;
 
         // allTags is just used inside the deferred loadTags. Should clean this up
         $scope.allTags = [];
@@ -83,8 +78,8 @@ angular.module("filecabinet.controllers", [])
 ])
 
 .controller("UploadCtrl", [
-    "$scope", "$http", "$upload",
-    function($scope, $http, $upload) {
+    "$scope", "$http", "$upload", "CouchService", "DateUtils",
+    function($scope, $http, $upload, CouchService, DateUtils) {
         $scope.uploads = [];
 
         $scope.onFileSelect = function($files) {
@@ -98,33 +93,15 @@ angular.module("filecabinet.controllers", [])
             });
         };
 
-        var getLocalISO8601 = function(date) {
-            function pad(num) {
-                var norm = Math.abs(Math.floor(num));
-                return (norm < 10 ? '0' : '') + norm;
-            }
-
-            var tzo = -date.getTimezoneOffset();
-            var sign = tzo >= 0 ? '+' : '-';
-            return date.getFullYear() 
-                + '-' + pad(date.getMonth()+1)
-                + '-' + pad(date.getDate())
-                + 'T' + pad(date.getHours())
-                + ':' + pad(date.getMinutes()) 
-                + ':' + pad(date.getSeconds()) 
-                + sign + pad(tzo / 60) 
-                + ':' + pad(tzo % 60);
-        };
-
         var createDocument = function(upload) {
             upload.status = "Creating db record";
             $http({
                 method: "POST",
-                url: "/filecabinet/",
+                url: "/" + CouchService.currentDb() + "/",
                 data: {
                     type: "document",
                     unseen: true,
-                    uploaded: getLocalISO8601(new Date()),
+                    uploaded: DateUtils.toLocalIso8601(new Date()),
                     raw: upload.filename
                 }
             }).error(function(data, status, headers, config) {
@@ -144,7 +121,7 @@ angular.module("filecabinet.controllers", [])
             fileReader.readAsArrayBuffer(upload.selectedFile);
             fileReader.onload = function(e) {
                 upload.attachmentUpload = $upload.http({
-                    url: '/filecabinet/' + upload.id + '/' + upload.filename + '?rev=' + upload.rev,
+                    url: "/" + CouchService.currentDb() + "/" + upload.id + '/' + upload.filename + '?rev=' + upload.rev,
                     headers: {'Content-Type': upload.selectedFile.type},
                     data: e.target.result,
                     method: 'PUT'

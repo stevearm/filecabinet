@@ -4,7 +4,7 @@
         <form role="form">
             <div class="form-group">
                 <label>Filename</label>
-                <p class="form-control-static"><a href="attachmentUrl(doc._id, doc.raw)" target="_blank">{{ doc.raw }}</a></p>
+                <p class="form-control-static"><a href="{{ attachmentUrl(doc._id, doc.raw) }}" target="_blank">{{ doc.raw }}</a></p>
             </div>
             <div class="form-group">
                 <label>Uploaded</label>

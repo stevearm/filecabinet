@@ -16,4 +16,26 @@ angular.module("filecabinet.services", [])
             };
         }(this);
     }
+])
+
+.service("DateUtils", [
+    function() {
+        this.toLocalIso8601 = function(date) {
+            function pad(num) {
+                var norm = Math.abs(Math.floor(num));
+                return (norm < 10 ? '0' : '') + norm;
+            }
+
+            var tzo = -date.getTimezoneOffset();
+            var sign = tzo >= 0 ? '+' : '-';
+            return date.getFullYear()
+                + '-' + pad(date.getMonth()+1)
+                + '-' + pad(date.getDate())
+                + 'T' + pad(date.getHours())
+                + ':' + pad(date.getMinutes())
+                + ':' + pad(date.getSeconds())
+                + sign + pad(tzo / 60)
+                + ':' + pad(tzo % 60);
+        };
+    }
 ]);
