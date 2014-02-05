@@ -43,7 +43,9 @@ angular.module("filecabinet.controllers", [])
         // allTags is just used inside the deferred loadTags. Should clean this up
         $scope.allTags = [];
         $http.get("/" + CouchService.currentDb() + "/_design/ui/_view/tags?group=true").success(function(data){
-            $scope.allTags = data.rows.map(function(element){ return element.key; });
+            $scope.allTags = data.rows
+                                .map(function(element) { return element.key; })
+                                .filter(function(e) { return e != null; });
         });
         $scope.loadTags = function(input) {
             var relevantTags = $scope.allTags.filter(function(e){ return e.indexOf(input) != -1; });
