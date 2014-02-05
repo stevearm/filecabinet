@@ -96,7 +96,7 @@ angular.module("filecabinet.controllers", [])
             $files.forEach(function(file) {
                 var upload = {
                     selectedFile: file,
-                    filename: file.name.replace(/[^0-9A-Za-z-_()]/g, "_")
+                    filename: file.name.replace(/[^0-9A-Za-z-_.()]/g, "_")
                 };
                 $scope.uploads.push(upload);
                 createDocument(upload);
