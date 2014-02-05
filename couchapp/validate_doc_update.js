@@ -14,7 +14,7 @@ function(newDoc, oldDoc, userCtx) {
 			if (!("uploaded" in newDoc)) {
 				fail("All documents must have an upload time");
 			}
-			if ( ("tags" in newDoc) && !Array.isArray(newDoc.tags)) {
+			if (!Array.isArray(newDoc.tags)) {
 				fail("tags must be an array");
 			}
 			break;

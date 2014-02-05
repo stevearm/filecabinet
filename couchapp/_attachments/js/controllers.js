@@ -36,7 +36,7 @@ angular.module("filecabinet.controllers", [])
     "$scope", "$routeParams", "$http", "$q", "Document", "CouchService",
     function($scope, $routeParams, $http, $q, Document, CouchService) {
         var docId = $routeParams.docId;
-        $scope.doc = Document.get({id: docId }, function(){ $scope.doc.tags = $scope.doc.tags || []; });
+        $scope.doc = Document.get({id: docId });
 
         $scope.attachmentUrl = CouchService.attachmentUrl;
 
@@ -102,7 +102,8 @@ angular.module("filecabinet.controllers", [])
                     type: "document",
                     unseen: true,
                     uploaded: DateUtils.toLocalIso8601(new Date()),
-                    raw: upload.filename
+                    raw: upload.filename,
+                    tags: []
                 }
             }).error(function(data, status, headers, config) {
                 upload.status = "Error creating document";
