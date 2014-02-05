@@ -26,7 +26,15 @@ angular.module("filecabinet.controllers", [])
             }
             $http.post("/" + CouchService.currentDb() + "/_design/ui/_view/tags?reduce=false&include_docs=true", {'keys':tags})
                 .success(function(result){
-                    $scope.docs = result.rows.map(function(element){ return element.doc; });
+                    var docMap = {};
+                    result.rows.forEach(function(e){
+                        docMap[e.id] = e.doc;
+                    });
+                    var docs = [];
+                    for (var id in docMap) {
+                        docs.push(docMap[id]);
+                    }
+                    $scope.docs = docs;
                 });
         }, true);
     }
