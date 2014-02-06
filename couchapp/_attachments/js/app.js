@@ -25,11 +25,11 @@ angular.module("filecabinet", [
             controller:     'DocumentCtrl'
         })
         .when('/unseen', {
-            templateUrl:    'partials/unseen.html',
+            templateUrl:    'partials/queue.html',
             controller:     'UnseenCtrl'
         })
         .when('/unprocessed', {
-            templateUrl:    'partials/unseen.html',
+            templateUrl:    'partials/queue.html',
             controller:     'UnprocessedCtrl'
         })
         .when('/upload', {

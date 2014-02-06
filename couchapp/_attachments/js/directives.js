@@ -40,7 +40,7 @@ angular.module("filecabinet.directives", [])
     }
 })
 
-.directive('fcMiniFile', [
+.directive('docCard', [
     "CouchService",
     function (CouchService) {
         return {
@@ -48,7 +48,7 @@ angular.module("filecabinet.directives", [])
             scope: {       // create an isolate scope
                 doc: '='  // map the var in the doc attribute to this scope
             },
-            templateUrl: 'partials/fcMiniFile.html', // load the template file
+            templateUrl: 'partials/docCard.html', // load the template file
             controller: function($scope){
                 $scope.thumbUrl = function() {
                     if ($scope.doc.thumbnail) {
