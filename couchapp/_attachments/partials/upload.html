@@ -1,15 +1,20 @@
-Select files: <input type="file" ng-file-select="onFileSelect($files)" multiple>
-
-<div ng-file-drop="onFileSelect($files)" class="drop-box" ng-show="dropSupported">or drop files here</div>
-<div ng-file-drop-available="dropSupported=true" ng-show="!dropSupported">HTML5 drag-n-drop not supported!</div>
-
-<ul>
-	<li ng-repeat="upload in uploads">
-		<span ng-hide="upload.id">{{ upload.status }}</span>
-		<a href="#/doc/{{ upload.id }}" ng-show="upload.id">{{ upload.status }}</a>
-		<span ng-show="upload.attachmentUpload">
-			Progress: {{ upload.progress }}% <button ng-click="upload.attachmentUpload.abort()">Cancel</button>
-		</span>
-	</li>
-</ul>
-
+<div class="row">
+    <div class="col-md-6">
+        <div ng-file-drop="onFileSelect($files)" class="drop-box" ng-show="dropSupported">Drop files here</div>
+        <div ng-file-drop-available="dropSupported=true" ng-show="!dropSupported">HTML5 drag-n-drop not supported!</div>
+        or select files: <input type="file" ng-file-select="onFileSelect($files)" multiple>
+    </div>
+    <div class="col-md-6">
+        <ul>
+            <li ng-repeat="upload in uploads">
+                <span ng-hide="upload.id">{{ upload.filename}}</span>
+                <a href="#/doc/{{ upload.id }}" ng-show="upload.id">{{ upload.filename }}</a>
+                ({{ upload.selectedFile.size / 1000 }}kB) - {{ upload.status }}
+                <span ng-show="upload.attachmentUpload">
+                    Progress: {{ upload.progress }}% <button ng-click="upload.attachmentUpload.abort()">Cancel</button>
+                </span>
+                <span ng-show="upload.time">{{ upload.time / 1000 }}s</span>
+            </li>
+        </ul>
+    </div>
+</div>

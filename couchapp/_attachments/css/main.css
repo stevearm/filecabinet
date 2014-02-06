@@ -125,10 +125,13 @@ body {
 .drop-box {
 	background: #F8F8F8;
 	border: 5px dashed #DDD;
-	width: 200px;
-	height: 100px;
+	border-radius: 7px;
+	width: 300px;
+	height: 200px;
 	text-align: center;
-	padding-top: 35px;
+	padding-top: 50px;
+	font-size: 18pt;
+	font-weight: bold;
 }
 
 .drop-box.dragover {

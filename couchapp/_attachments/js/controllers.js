@@ -96,6 +96,7 @@ angular.module("filecabinet.controllers", [])
             $files.forEach(function(file) {
                 var upload = {
                     selectedFile: file,
+                    start: new Date(),
                     filename: file.name.replace(/[^0-9A-Za-z-_.()]/g, "_")
                 };
                 $scope.uploads.push(upload);
@@ -127,7 +128,7 @@ angular.module("filecabinet.controllers", [])
         };
 
         var uploadAttachment = function(upload) {
-            upload.status = "Uploading " + upload.filename;
+            upload.status = "Uploading file";
             var fileReader = new FileReader();
             fileReader.readAsArrayBuffer(upload.selectedFile);
             fileReader.onload = function(e) {
@@ -140,6 +141,7 @@ angular.module("filecabinet.controllers", [])
                     if (response.data.ok) {
                         upload.status = "Finished uploading";
                         upload.rev = response.rev;
+                        upload.time = new Date() - upload.start;
                         delete upload.attachmentUpload;
                     } else {
                         console.log("Got upload response", response);
@@ -147,6 +149,7 @@ angular.module("filecabinet.controllers", [])
                 }, null, function(evt) {
                     // Math.min is to fix IE which reports 200% sometimes
                     upload.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                    upload.time = new Date() - upload.start;
                 });
             };
         };
