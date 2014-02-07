@@ -15,6 +15,14 @@ angular.module("filecabinet.services", [])
                 return "/" + that.currentDb() + "/" + docId + "/" + attachmentName;
             };
         }(this);
+        this.viewUrl = function(that) {
+            return function(designDocId, viewName) {
+                if (!designDocId || !viewName) {
+                    return "";
+                }
+                return "/" + that.currentDb() + "/_design/" + designDocId + "/_view/" + viewName;
+            };
+        }(this);
     }
 ])
 

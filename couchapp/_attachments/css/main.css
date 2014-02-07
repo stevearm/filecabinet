@@ -6,6 +6,13 @@ body {
 	padding-top: 70px;
 }
 
+#tags span.label {
+	cursor: pointer;
+	font-size: 100%;
+	line-height: 2;
+	margin: 2px;
+}
+
 /********************************/
 
 .key {
@@ -80,23 +87,6 @@ body {
 	margin: 2px;
 	padding: 5px;
 	border-radius: 5px;
-}
-
-#tag-filter {
-	margin: 5px 0px;
-}
-
-.tag {
-	border: 2px #707070 solid;
-	border-radius: 5px;
-	margin: 2px;
-	cursor: pointer;
-	padding: 2px;
-}
-
-.tag.selected {
-	color: #fff;
-	background-color: #707070;
 }
 
 /* Draggable thumbnail **********************************************/

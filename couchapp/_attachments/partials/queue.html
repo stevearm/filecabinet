@@ -1,5 +1,5 @@
 <div>
-    <span ng-repeat="doc in docs">
+    <span ng-repeat="doc in docs |orderBy:'uploaded'">
         <doc-card doc="doc"></doc-card>
     </span>
     <span ng-show="docs.length == 0">No {{ queueName }} documents</span>

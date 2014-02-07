@@ -7,8 +7,9 @@ angular.module("filecabinet.controllers", [])
     function($scope, $http, CouchService) {
         $scope.tags = [];
         $scope.docs = [];
+        $scope.newestFirst = true;
 
-        $http.get("/" + CouchService.currentDb() + "/_design/ui/_view/tags?group=true").success(function(data){
+        $http.get(CouchService.viewUrl("ui", "tags") + "?group=true").success(function(data){
             $scope.tags = data.rows.map(function(element){
                 return { name: element.key, show: false };
             });
@@ -24,7 +25,7 @@ angular.module("filecabinet.controllers", [])
                 $scope.docs = [];
                 return;
             }
-            $http.post("/" + CouchService.currentDb() + "/_design/ui/_view/tags?reduce=false&include_docs=true", {'keys':tags})
+            $http.post(CouchService.viewUrl("ui", "tags") + "?reduce=false&include_docs=true", {'keys':tags})
                 .success(function(result){
                     var docMap = {};
                     result.rows.forEach(function(e){
@@ -50,7 +51,7 @@ angular.module("filecabinet.controllers", [])
 
         // allTags is just used inside the deferred loadTags. Should clean this up
         $scope.allTags = [];
-        $http.get("/" + CouchService.currentDb() + "/_design/ui/_view/tags?group=true").success(function(data){
+        $http.get(CouchService.viewUrl("ui", "tags") + "?group=true").success(function(data){
             $scope.allTags = data.rows
                                 .map(function(element) { return element.key; })
                                 .filter(function(e) { return e != null; });
@@ -70,7 +71,7 @@ angular.module("filecabinet.controllers", [])
     function($scope, $http, CouchService) {
         $scope.queueName = "unseen";
         $scope.docs = [];
-        $http.get("/" + CouchService.currentDb() + "/_design/ui/_view/human_queue?include_docs=true&limit=10").success(function(data){
+        $http.get(CouchService.viewUrl("ui", "human_queue") + "?include_docs=true&limit=10").success(function(data){
             $scope.docs = data.rows.map(function(e){ return e.doc; });
         });
     }
@@ -81,7 +82,7 @@ angular.module("filecabinet.controllers", [])
     function($scope, $http, CouchService) {
         $scope.queueName = "unprocessed";
         $scope.docs = [];
-        $http.get("/" + CouchService.currentDb() + "/_design/ui/_view/worker_queue?include_docs=true&limit=10").success(function(data){
+        $http.get(CouchService.viewUrl("ui", "worker_queue") + "?include_docs=true&limit=10").success(function(data){
             $scope.docs = data.rows.map(function(e){ return e.doc; });
         });
     }
@@ -133,7 +134,7 @@ angular.module("filecabinet.controllers", [])
             fileReader.readAsArrayBuffer(upload.selectedFile);
             fileReader.onload = function(e) {
                 upload.attachmentUpload = $upload.http({
-                    url: "/" + CouchService.currentDb() + "/" + upload.id + '/' + upload.filename + '?rev=' + upload.rev,
+                    url: CouchService.attachmentUrl(upload.id, upload.filename) + '?rev=' + upload.rev,
                     headers: {'Content-Type': upload.selectedFile.type},
                     data: e.target.result,
                     method: 'PUT'
