@@ -7,20 +7,27 @@ angular.module("filecabinet.services", [])
         this.currentDb = function() {
             return document.location.pathname.split("/")[1];
         };
+        this.currentDesignDoc = function() {
+            return document.location.pathname.split("/")[3];
+        };
+        this.viewUrl = function(that) {
+            return function(viewName, designDocId) {
+                if (!viewName) {
+                    return "";
+                }
+                if (!designDocId) {
+                    designDocId = that.currentDesignDoc();
+                }
+                return "/" + that.currentDb() + "/_design/" + designDocId + "/_view/" + viewName;
+            };
+        }(this);
+
         this.attachmentUrl = function(that) {
             return function(docId, attachmentName) {
                 if (!docId || !attachmentName) {
                     return "";
                 }
                 return "/" + that.currentDb() + "/" + docId + "/" + attachmentName;
-            };
-        }(this);
-        this.viewUrl = function(that) {
-            return function(designDocId, viewName) {
-                if (!designDocId || !viewName) {
-                    return "";
-                }
-                return "/" + that.currentDb() + "/_design/" + designDocId + "/_view/" + viewName;
             };
         }(this);
     }
