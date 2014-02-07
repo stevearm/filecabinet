@@ -17,8 +17,8 @@ angular.module("filecabinet", [
     function($routeProvider) {
         $routeProvider
         .when('/', {
-            templateUrl:    'partials/index.html',
-            controller:     'IndexCtrl'
+            templateUrl:    'partials/list.html',
+            controller:     'ListCtrl'
         })
         .when('/doc/:docId', {
             templateUrl:    'partials/document.html',

@@ -2,7 +2,7 @@
 
 angular.module("filecabinet.controllers", [])
 
-.controller("IndexCtrl", [
+.controller("ListCtrl", [
     "$scope", "$http", "CouchService",
     function($scope, $http, CouchService) {
         $scope.tags = [];
