@@ -15,6 +15,11 @@ angular.module("filecabinet.controllers", [])
                 $scope.unprocessed = data.rows[0].value;
             }
         });
+        $http.get(CouchService.listUrl("duplicates", "sha1") + "?group=true").success(function(data){
+            // For each group, subtract 1 from the count (because one in each group isn't a dupicate,
+            // it's the original), then sum everything
+            $scope.duplicates = data.reduce(function(acc,cur){ return acc + cur.value - 1; }, 0);
+        });
     }
 ])
 
@@ -100,6 +105,28 @@ angular.module("filecabinet.controllers", [])
         $scope.docs = [];
         $http.get(CouchService.viewUrl("worker_queue") + "?include_docs=true&limit=10&reduce=false").success(function(data){
             $scope.docs = data.rows.map(function(e){ return e.doc; });
+        });
+    }
+])
+
+.controller("DuplicatesCtrl", [
+    "$scope", "$http", "$routeParams", "CouchService",
+    function($scope, $http, $routeParams, CouchService) {
+        var currentHash = $routeParams.hash;
+        $scope.hashes = [];
+        $http.get(CouchService.listUrl("duplicates", "sha1") + "?group=true").success(function(data){
+            data.forEach(function(e){
+                var hash = { sha1: e.key, count: e.value, docs: [] };
+                $scope.hashes.push(hash);
+
+                // If this is the hash we're looking at, load all docs for it
+                if (hash.sha1 == currentHash) {
+                    $http.get(CouchService.viewUrl("sha1") + "?reduce=false&key=\"" + currentHash + "\"&include_docs=true")
+                        .success(function(hash) { return function(data){
+                            hash.docs = data.rows.map(function(e) { return e.doc; });
+                        }}(hash));
+                }
+            });
         });
     }
 ])

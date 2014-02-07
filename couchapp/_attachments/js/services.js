@@ -21,6 +21,17 @@ angular.module("filecabinet.services", [])
                 return "/" + that.currentDb() + "/_design/" + designDocId + "/_view/" + viewName;
             };
         }(this);
+        this.listUrl = function(that) {
+            return function(listName, viewName, designDocId) {
+                if (!listName || !viewName) {
+                    return "";
+                }
+                if (!designDocId) {
+                    designDocId = that.currentDesignDoc();
+                }
+                return "/" + that.currentDb() + "/_design/" + designDocId + "/_list/" + listName + "/" + viewName;
+            };
+        }(this);
 
         this.attachmentUrl = function(that) {
             return function(docId, attachmentName) {

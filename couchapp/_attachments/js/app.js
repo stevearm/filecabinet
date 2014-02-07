@@ -32,6 +32,14 @@ angular.module("filecabinet", [
             templateUrl:    'partials/queue.html',
             controller:     'UnprocessedCtrl'
         })
+        .when('/duplicates', {
+            templateUrl:    'partials/duplicates.html',
+            controller:     'DuplicatesCtrl'
+        })
+        .when('/duplicates/:hash', {
+            templateUrl:    'partials/duplicates.html',
+            controller:     'DuplicatesCtrl'
+        })
         .when('/upload', {
             templateUrl:    'partials/upload.html',
             controller:     'UploadCtrl'
