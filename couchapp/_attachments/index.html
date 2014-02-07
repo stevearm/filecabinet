@@ -8,13 +8,13 @@
         <link rel="stylesheet" type="text/css" href="css/main.css"/>
     </head>
     <body>
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" ng-controller="HeaderCtrl">
             <div class="container">
                 <a class="navbar-brand" href="#/">Filecabinet</a>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a active-tab="1" href="#/">Show docs</a></li>
-                    <li><a active-tab="1" href="#/unseen">Unseen</a></li>
-                    <li><a active-tab="1" href="#/unprocessed">Unprocessed</a></li>
+                    <li><a active-tab="1" href="#/unseen">Unseen ({{ unseen || 0 }})</a></li>
+                    <li><a active-tab="1" href="#/unprocessed">Unprocessed ({{ unprocessed || 0 }})</a></li>
                     <li><a active-tab="1" href="#/upload">Upload</a></li>
                 </ul>
             </div>

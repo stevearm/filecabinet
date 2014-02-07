@@ -2,6 +2,18 @@
 
 angular.module("filecabinet.controllers", [])
 
+.controller("HeaderCtrl", [
+    "$scope", "$http", "CouchService",
+    function($scope, $http, CouchService) {
+        $http.get(CouchService.viewUrl("ui", "human_queue")).success(function(data) {
+            $scope.unseen = data.rows[0].value;
+        });
+        $http.get(CouchService.viewUrl("ui", "worker_queue")).success(function(data) {
+            $scope.unprocessed = data.rows[0].value;
+        });
+    }
+])
+
 .controller("ListCtrl", [
     "$scope", "$http", "CouchService",
     function($scope, $http, CouchService) {
@@ -71,7 +83,7 @@ angular.module("filecabinet.controllers", [])
     function($scope, $http, CouchService) {
         $scope.queueName = "unseen";
         $scope.docs = [];
-        $http.get(CouchService.viewUrl("ui", "human_queue") + "?include_docs=true&limit=10").success(function(data){
+        $http.get(CouchService.viewUrl("ui", "human_queue") + "?include_docs=true&limit=10&reduce=false").success(function(data){
             $scope.docs = data.rows.map(function(e){ return e.doc; });
         });
     }
@@ -82,7 +94,7 @@ angular.module("filecabinet.controllers", [])
     function($scope, $http, CouchService) {
         $scope.queueName = "unprocessed";
         $scope.docs = [];
-        $http.get(CouchService.viewUrl("ui", "worker_queue") + "?include_docs=true&limit=10").success(function(data){
+        $http.get(CouchService.viewUrl("ui", "worker_queue") + "?include_docs=true&limit=10&reduce=false").success(function(data){
             $scope.docs = data.rows.map(function(e){ return e.doc; });
         });
     }

@@ -34,11 +34,11 @@ public class QueueProcessor {
 	}
 
 	public void run() throws IOException {
-		View view = m_clientFactory.get(m_dbName).view("ui/worker_queue");
+		View view = m_clientFactory.get(m_dbName).view("ui/worker_queue")
+				.includeDocs(true).reduce(false);
 		if (m_maxDocs != -1) {
 			view.limit(m_maxDocs);
 		}
-		view.includeDocs(true);
 		try {
 			List<FcDocument> docs = view.query(FcDocument.class);
 			LOG.info("{} documents to process", docs.size());
