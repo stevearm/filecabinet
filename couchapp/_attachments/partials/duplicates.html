@@ -1,7 +1,7 @@
 <div ng-repeat="hash in hashes">
     <a href="#/duplicates/{{ hash.sha1 }}">Group {{ hash.sha1 }}</a>: {{ hash.count }}
-    <span ng-repeat="doc in hash.docs |orderBy:'uploaded'">
-        <doc-card doc="doc"></doc-card>
-    </span>
+    <div>
+        <doc-card ng-repeat="doc in hash.docs |orderBy:'uploaded'" doc="doc"></doc-card>
+    </div>
 </div>
 <span ng-show="hashes.length == 0">No duplicates</span>
