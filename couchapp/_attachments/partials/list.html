@@ -1,6 +1,6 @@
 <div id="tags">
     <span ng-repeat="tag in tags |orderBy:'name'">
-        <span class="label"
+        <span class="label label-toggle"
               ng-class="{ 'label-default': !tag.show, 'label-primary': tag.show }"
               ng-click="tag.show = !tag.show">
             {{ tag.name || "[untagged]" }}
@@ -8,9 +8,9 @@
     </span>
 
     <br/>
-    <span class="label label-primary" ng-click="showAllTags(true)">All</span>
-    <span class="label label-default" ng-click="showAllTags(false)">None</span>
-    <span class="label label-default" ng-click="newestFirst = !newestFirst">
+    <span class="label label-toggle label-primary" ng-click="showAllTags(true)">All</span>
+    <span class="label label-toggle label-default" ng-click="showAllTags(false)">None</span>
+    <span class="label label-toggle label-default" ng-click="newestFirst = !newestFirst">
         <span ng-show="newestFirst">Showing newest first</span>
         <span ng-hide="newestFirst">Showing oldest first</span>
     </span>

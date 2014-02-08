@@ -8,10 +8,13 @@ body {
 
 /* Fix tag filters on index page */
 #tags span.label {
-    cursor: pointer;
     font-size: 100%;
     line-height: 2;
     margin: 2px;
+}
+
+.label-toggle {
+    cursor: pointer;
 }
 
 /* Doc card *******************/

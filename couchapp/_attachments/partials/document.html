@@ -35,10 +35,15 @@
         </form>
     </div>
     <div id="thumbnail" class="col-md-6">
-        <ul>
-            <li ng-click="doc.thumbnail = null">No thumbnail</li>
-            <li ng-repeat="thumb in doc.thumbs()" ng-click="doc.thumbnail = thumb">{{ thumb }}</li>
-        </ul>
+        <div style="margin-bottom: 5px;">
+            <span   class="label label-toggle"
+                    ng-class="{ 'label-default': doc.thumbnail != null, 'label-primary': doc.thumbnail == null }"
+                    ng-click="doc.thumbnail = null">No thumbnail</span>
+            <span   ng-repeat="thumb in doc.thumbs()"
+                    class="label label-toggle"
+                    ng-class="{ 'label-default': doc.thumbnail != thumb, 'label-primary': doc.thumbnail == thumb }"
+                    ng-click="doc.thumbnail = thumb">{{ thumb }}</span>
+        </div>
         <div id="full-image-viewport" ng-show="doc.thumbnail">
             <img id="full-image" ng-src="{{ attachmentUrl(doc._id, doc.thumbnail) }}" draggable/>
         </div>
