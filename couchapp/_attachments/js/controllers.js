@@ -63,8 +63,8 @@ angular.module("filecabinet.controllers", [])
 ])
 
 .controller("DocumentCtrl", [
-    "$scope", "$routeParams", "$http", "$q", "Document", "CouchService",
-    function($scope, $routeParams, $http, $q, Document, CouchService) {
+    "$scope", "$routeParams", "$http", "$q", "$window", "Document", "CouchService",
+    function($scope, $routeParams, $http, $q, $window, Document, CouchService) {
         var docId = $routeParams.docId;
         $scope.doc = Document.get({id: docId });
 
@@ -84,6 +84,11 @@ angular.module("filecabinet.controllers", [])
             deferred.resolve(relevantTags);
             return deferred.promise;
         };
+        $scope.deleteDoc = function() {
+            $scope.doc.$delete(function() {
+                $window.history.back();
+            });
+        }
     }
 ])
 
