@@ -38,7 +38,8 @@ angular.module("filecabinet.factories", [])
             });
         };
 
-        Document.prototype.$save = function() {
+        Document.prototype.$save = function(callback) {
+            if (!callback) { callback = function(){}; }
             this.deleteUnusedThumbs();
 
             // Scrub any objects into strings to prepare for save
@@ -57,6 +58,7 @@ angular.module("filecabinet.factories", [])
                 window.alert("Error saving: " + data.reason);
             }).success(function(original_object){ return function(data, status, headers, config) {
                 original_object._rev = data.rev;
+                callback();
             };}(this));
         };
 

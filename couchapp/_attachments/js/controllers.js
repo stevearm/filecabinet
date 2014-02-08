@@ -84,11 +84,16 @@ angular.module("filecabinet.controllers", [])
             deferred.resolve(relevantTags);
             return deferred.promise;
         };
+        $scope.saveDoc = function() {
+            $scope.doc.$save(function() {
+                $window.history.back();
+            });
+        };
         $scope.deleteDoc = function() {
             $scope.doc.$delete(function() {
                 $window.history.back();
             });
-        }
+        };
     }
 ])
 
