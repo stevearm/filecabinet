@@ -13,9 +13,9 @@
                 <a class="navbar-brand" href="#/">Filecabinet</a>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a active-tab="1" href="#/">Show docs</a></li>
-                    <li><a active-tab="1" href="#/unseen">Unseen ({{ unseen || 0 }})</a></li>
-                    <li><a active-tab="1" href="#/unprocessed">Unprocessed ({{ unprocessed || 0 }})</a></li>
-                    <li><a active-tab="1" href="#/duplicates">Duplicates ({{ duplicates || 0 }})</a></li>
+                    <li><a active-tab="1" href="#/unseen">Unseen <span class="badge" ng-show="unseen">{{ unseen }}</span></a></li>
+                    <li><a active-tab="1" href="#/unprocessed">Unprocessed  <span class="badge" ng-show="unprocessed">{{ unprocessed }}</span></a></li>
+                    <li><a active-tab="1" href="#/duplicates">Duplicates  <span class="badge" ng-show="duplicates">{{ duplicates }}</span></a></li>
                     <li><a active-tab="1" href="#/upload">Upload</a></li>
                 </ul>
             </div>
