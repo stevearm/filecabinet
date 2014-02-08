@@ -2,91 +2,72 @@
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 body {
-	min-height: 2000px;
-	padding-top: 70px;
+    min-height: 2000px;
+    padding-top: 70px;
 }
 
+/* Fix tag filters on index page */
 #tags span.label {
-	cursor: pointer;
-	font-size: 100%;
-	line-height: 2;
-	margin: 2px;
+    cursor: pointer;
+    font-size: 100%;
+    line-height: 2;
+    margin: 2px;
 }
 
-/********************************/
+/* Doc card *******************/
 
-.key {
-	display: inline-block;
-	width: 70px;
+.doc-list {
+    vertical-align: top;
 }
-
-.value {
-	font-weight: bold;
-}
-
-/**************** Thumbs *******************/
 
 .doc {
-	background: rgba(226,226,226,1);
-	padding: 10px 20px;
-	border: 2px #fff solid;
-	border-radius: 20px;
-	margin: 10px;
-	display: inline-block;
-	width: 450px;
-	cursor: pointer;
-	text-decoration: none;
-	color: black;
+    background: rgba(226,226,226,1);
+    padding: 10px 20px;
+    border: 2px #fff solid;
+    border-radius: 20px;
+    margin: 10px;
+    display: inline-block;
+    width: 350px;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
+
+.doc:hover {
+    text-decoration: none;
 }
 
 .thumb {
-	display: inline-block;
-	float: right;
-	text-align: center;
+    display: inline-block;
+    float: right;
+    text-align: center;
+    padding-top: 5px;
+    width: 100px;
 }
 
-.thumb > img {
-	height: 135px;
+.doc dl {
+    margin-bottom: 10px;
 }
 
-.thumb > a {
-	color: #000;
-	font-size: small;
+.filename {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 200px;
+    position: relative;
 }
 
-.doc .filename {
-	overflow: hidden;
-	white-space: nowrap;
-	width: 340px;
-	position: relative;
-}
-
-.doc .filename:after {
-	content: "";
-	width: 50px;
-	height: 50px;
-	position: absolute;
-	top: 0;
-	right: 0;
-	background: -moz-linear-gradient(left, rgba(226,226,226,0) 0%, rgba(226,226,226,1) 100%);
-	background: -webkit-linear-gradient(left, rgba(226,226,226,0) 0%, rgba(226,226,226,1) 100%);
-	background: -o-linear-gradient(left, rgba(226,226,226,0) 0%, rgba(226,226,226,1) 100%);
-	background: -ms-linear-gradient(left, rgba(226,226,226,0) 0%, rgba(226,226,226,1) 100%);
-	background: linear-gradient(left, rgba(226,226,226,0) 0%, rgba(226,226,226,1) 100%);
-}
-
-.doc ul {
-	padding: 0px;
-	margin: 3px;
-}
-
-.doc li {
-	display: inline-block;
-	color: #fff;
-	background-color: #707070;
-	margin: 2px;
-	padding: 5px;
-	border-radius: 5px;
+.filename:after {
+    content: "";
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: -moz-linear-gradient(left, rgba(226,226,226,0) 0%, rgba(226,226,226,1) 100%);
+    background: -webkit-linear-gradient(left, rgba(226,226,226,0) 0%, rgba(226,226,226,1) 100%);
+    background: -o-linear-gradient(left, rgba(226,226,226,0) 0%, rgba(226,226,226,1) 100%);
+    background: -ms-linear-gradient(left, rgba(226,226,226,0) 0%, rgba(226,226,226,1) 100%);
+    background: linear-gradient(left, rgba(226,226,226,0) 0%, rgba(226,226,226,1) 100%);
 }
 
 /* Draggable thumbnail **********************************************/
@@ -113,17 +94,17 @@ body {
 
 /* Drag and drop upload *****************************************/
 .drop-box {
-	background: #F8F8F8;
-	border: 5px dashed #DDD;
-	border-radius: 7px;
-	width: 300px;
-	height: 200px;
-	text-align: center;
-	padding-top: 50px;
-	font-size: 18pt;
-	font-weight: bold;
+    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    border-radius: 7px;
+    width: 300px;
+    height: 200px;
+    text-align: center;
+    padding-top: 50px;
+    font-size: 18pt;
+    font-weight: bold;
 }
 
 .drop-box.dragover {
-	border: 5px dashed blue;
+    border: 5px dashed blue;
 }

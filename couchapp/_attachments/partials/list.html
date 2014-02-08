@@ -11,12 +11,10 @@
     <span class="label label-primary" ng-click="showAllTags(true)">All</span>
     <span class="label label-default" ng-click="showAllTags(false)">None</span>
     <span class="label label-default" ng-click="newestFirst = !newestFirst">
-        <span ng-show="newestFirst">Newest first</span>
-        <span ng-hide="newestFirst">Oldest first</span>
+        <span ng-show="newestFirst">Showing newest first</span>
+        <span ng-hide="newestFirst">Showing oldest first</span>
     </span>
 </div>
-<div>
-    <span ng-repeat="doc in docs |orderBy:'effective':newestFirst">
-        <doc-card doc="doc"></doc-card>
-    </span>
+<div class="doc-list">
+    <doc-card ng-repeat="doc in docs |orderBy:'effective':newestFirst" doc="doc"></doc-card>
 </div>
