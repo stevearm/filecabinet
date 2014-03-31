@@ -17,8 +17,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.io.ByteStreams;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.horsefire.filecabinet.MimeType;
 import com.horsefire.filecabinet.couch.Attachment;
 
@@ -27,18 +25,20 @@ public class AttachmentManager {
 	private static final Logger LOG = LoggerFactory
 			.getLogger(AttachmentManager.class);
 
-	private final String m_host;
-	private final String m_db;
+	private final String m_url;
 
-	@Inject
-	public AttachmentManager(@Named("dbPort") Integer port,
-			@Named("dbName") String db) {
-		m_host = "127.0.0.1:" + port;
-		m_db = db;
-	}
-
-	private String baseUrl() {
-		return "http://" + m_host + "/" + m_db;
+	public AttachmentManager(String host, Integer port, String username,
+			String password, String db) {
+		StringBuilder b = new StringBuilder("http://");
+		if (username != null && password != null) {
+			b.append(username).append(":").append(password).append("@");
+		}
+		b.append(host);
+		if (port != null) {
+			b.append(":").append(port);
+		}
+		b.append("/").append(db);
+		m_url = b.toString();
 	}
 
 	private HttpResponse get(String url) throws IOException {
@@ -66,7 +66,7 @@ public class AttachmentManager {
 
 	public Attachment getAttachment(String id, String attachmentName)
 			throws IOException {
-		HttpResponse response = get(baseUrl() + "/" + id + "/" + attachmentName);
+		HttpResponse response = get(m_url + "/" + id + "/" + attachmentName);
 		String contentType = response.getHeaders("Content-Type")[0].getValue();
 		MimeType mimeType = MimeType.get(contentType);
 		InputStream in = response.getEntity().getContent();
@@ -85,8 +85,7 @@ public class AttachmentManager {
 		if (attachment.content == null || attachment.content.length == 0) {
 			throw new NullPointerException("Cannot upload a null payload");
 		}
-		HttpPut put = new HttpPut(baseUrl() + "/" + id + "/" + name + "?rev="
-				+ rev);
+		HttpPut put = new HttpPut(m_url + "/" + id + "/" + name + "?rev=" + rev);
 		put.setEntity(new ByteArrayEntity(attachment.content, ContentType
 				.create(attachment.type.toString())));
 		JsonObject result = doPut(put);

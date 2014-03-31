@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
 import com.horsefire.filecabinet.DocumentProcessor.Factory;
 import com.horsefire.filecabinet.couch.FcDocument;
 
@@ -25,12 +24,11 @@ public class QueueProcessor {
 
 	@Inject
 	public QueueProcessor(CouchDbClientFactory clientFactory,
-			DocumentProcessor.Factory docProcessorFactory,
-			@Named("dbName") String dbName, @Named("maxDocs") Integer maxDocs) {
+			DocumentProcessor.Factory docProcessorFactory, Options options) {
 		m_clientFactory = clientFactory;
 		m_docProcessorFactory = docProcessorFactory;
-		m_dbName = dbName;
-		m_maxDocs = maxDocs;
+		m_dbName = options.dbName;
+		m_maxDocs = options.maxDocs;
 	}
 
 	public void run() throws IOException {

@@ -25,9 +25,6 @@ public class Options {
 	@Parameter(names = { "--dbPassword" }, description = "Database password", required = true)
 	public String password;
 
-	@Parameter(names = { "--id" }, description = "Current vault id", required = true)
-	public String vaultId;
-
 	@Parameter(names = { "--maxDocs" }, description = "Max number of documents to process")
 	public int maxDocs = -1;
 }
